@@ -12,12 +12,13 @@ public class Player {
     public static final int HITBOX_WIDTH = 40, HITBOX_HEIGHT = IMAGE_HEIGHT - HITBOX_Y;
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
-    
+
     public static final double TARGET_X = Game.PLAYER_X - HITBOX_X;
-    
+
     public static final double RUN_ACCEL = 1.0;
     public static final double JUMP_VEL = 8;
     public static final double RECOIL_VEL = 12;
+    public static final int INTERSECT_MARGIN = 10;
     // position
     private double x, y;
     // velocity
@@ -53,22 +54,46 @@ public class Player {
     public void setShouldJump(boolean b) {
         shouldJump = b;
     }
-    
+
     public void shootAt(double x, double y) {
-    	shootAngle = Math.atan2(y - (this.y + CENTER_Y), x - (this.x + CENTER_X));
-    	shouldShoot = true;
+        shootAngle = Math.atan2(y - (this.y + CENTER_Y), x - (this.x + CENTER_X));
+        shouldShoot = true;
     }
 
     public void move(ArrayList<Building> buildings) {
         x += vx;
-        y += vy;
-        vy += Game.GRAVITY;
         double groundY = Application.HEIGHT;
-        for (Building b : buildings) {
-            if (true /* our x is in the building */) {
-                groundY = Math.min(b.getY(), groundY);
+        {
+            Building hitBuilding = null;
+            double x1 = x + HITBOX_X;
+            double x2 = x1 + HITBOX_WIDTH;
+            for (Building b : buildings) {
+                if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
+                    hitBuilding = b;
+                    groundY = b.getY();
+                }
+            }
+            if (y + IMAGE_HEIGHT > groundY + INTERSECT_MARGIN) {
+                if (hitBuilding != null) {
+                    if (vx < 0) {
+                        x = hitBuilding.getX2() - HITBOX_X + 1;
+                    } else {
+                        x = hitBuilding.getX1() - HITBOX_X - HITBOX_WIDTH - 1;
+                    }
+                    vx = 0;
+                    groundY = Application.HEIGHT;
+                    x1 = x + HITBOX_X;
+                    x2 = x1 + HITBOX_WIDTH;
+                    for (Building b : buildings) {
+                        if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
+                            groundY = b.getY();
+                        }
+                    }
+                }
             }
         }
+        y += vy;
+        vy += Game.GRAVITY;
         if (y + IMAGE_HEIGHT > groundY) {
             vy = 0;
             y = groundY - IMAGE_HEIGHT;
@@ -77,17 +102,16 @@ public class Player {
             // if on ground
             double accel = Math.copySign(RUN_ACCEL, -vx);
             if (RUN_ACCEL > Math.abs(vx))
-            	vx = 0;
+                vx = 0;
             else
-            	vx += accel;
+                vx += accel;
             if (shouldJump) {
                 vy = -JUMP_VEL;
-                
             }
         }
         if (shouldShoot) {
-        	vx -= Math.cos(shootAngle) * RECOIL_VEL;
-        	vy -= Math.sin(shootAngle) * RECOIL_VEL;
+            vx -= Math.cos(shootAngle) * RECOIL_VEL;
+            vy -= Math.sin(shootAngle) * RECOIL_VEL;
         }
         shouldShoot = false;
         shouldJump = false;

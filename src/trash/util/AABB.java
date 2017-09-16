@@ -11,7 +11,7 @@ public class AABB {
     }
 
     public boolean intersects(AABB other) {
-        // TODO: someone write this
-    	return true;
+        return !(x2 < other.x1 || other.x2 < x1
+              || y2 < other.y1 || other.y2 < y2);
     }
 }

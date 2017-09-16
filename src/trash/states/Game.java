@@ -28,7 +28,8 @@ public class Game extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         buildings.clear();
         int initialGroundY = 500;
-        buildings.add(new Building(0, 500, initialGroundY));
+        buildings.add(new Building(100, 500, initialGroundY));
+        buildings.add(new Building(700, 800, initialGroundY + 100));
         player.init(initialGroundY);
     }
 

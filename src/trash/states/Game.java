@@ -1,36 +1,63 @@
 package trash.states;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import trash.Application;
+import trash.objects.Building;
+import trash.objects.Player;
 
 public class Game extends BasicGameState {
+    public static final double GRAVITY = 1.0;
+    public static final double PLAYER_X = 100;
 
-	@Override
-	public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
-		// TODO Auto-generated method stub
-		
-	}
+    private ArrayList<Building> buildings;
+    private Player player;
 
-	@Override
-	public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-		// TODO Auto-generated method stub
-		
-	}
+    // resources
+    private Image playerImage;
 
-	@Override
-	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+        buildings.clear();
+        int initialGroundY = 500;
+        buildings.add(new Building(0, 500, initialGroundY));
+        player.init(initialGroundY);
+    }
 
-	@Override
-	public int getID() {
-		return Application.GAME;
-	}
+    @Override
+    public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+        player = new Player();
+        buildings = new ArrayList<>();
+        playerImage = new Image("res/player.png");
+        playerImage.setFilter(Image.FILTER_NEAREST);
+    }
 
+    @Override
+    public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
+        playerImage.draw(player.getDrawX(), player.getDrawY());
+        for (Building b : buildings)
+            drawBuilding(g, b);
+    }
+
+    @Override
+    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public int getID() {
+        return Application.GAME;
+    }
+
+    private void drawBuilding(Graphics g, Building b) {
+        g.fillRect((float)b.getX1(), (float)b.getY(),
+                (float)b.getX2() - (float)b.getX1(), (float)(Application.HEIGHT - b.getY()));
+    }
 }

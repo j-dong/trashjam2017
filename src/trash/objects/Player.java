@@ -14,9 +14,7 @@ public class Player {
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
     
     public static final double TARGET_X = Game.PLAYER_X - HITBOX_X;
-
-    // vx is multiplied by this when we hit the ground
-    public static final double RUN_SPEED = 100.0;
+    
     public static final double RUN_ACCEL = 1.0;
     public static final double JUMP_VEL = 8;
     public static final double RECOIL_VEL = 12;
@@ -77,25 +75,21 @@ public class Player {
         }
         if (y + IMAGE_HEIGHT + 1 >= groundY) {
             // if on ground
-            // run towards player x
-            double target_vel = Math.copySign(RUN_SPEED, TARGET_X - x);
-            if (RUN_SPEED > Math.abs(TARGET_X - x)) {
-            	target_vel = TARGET_X - x;
-            }
-            double accel = Math.copySign(RUN_ACCEL, target_vel - vx);
-            if (RUN_ACCEL > Math.abs(target_vel - vx))
-            	vx = target_vel;
+            double accel = Math.copySign(RUN_ACCEL, -vx);
+            if (RUN_ACCEL > Math.abs(vx))
+            	vx = 0;
             else
             	vx += accel;
             if (shouldJump) {
                 vy = -JUMP_VEL;
-                shouldJump = false;
+                
             }
         }
         if (shouldShoot) {
         	vx -= Math.cos(shootAngle) * RECOIL_VEL;
         	vy -= Math.sin(shootAngle) * RECOIL_VEL;
-        	shouldShoot = false;
         }
+        shouldShoot = false;
+        shouldJump = false;
     }
 }

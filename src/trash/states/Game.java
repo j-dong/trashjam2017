@@ -74,9 +74,9 @@ public class Game extends BasicGameState {
     @Override
     public void update(GameContainer gc, StateBasedGame arg1, int arg2) throws SlickException {
         Input input = gc.getInput();
-        player.setRunDirection((input.isKeyDown(Input.KEY_LEFT)  ? -1 : 0) +
-                               (input.isKeyDown(Input.KEY_RIGHT) ?  1 : 0));
-        if (input.isKeyDown(Input.KEY_SPACE))
+        player.setRunDirection((input.isKeyDown(Input.KEY_LEFT)||input.isKeyDown(Input.KEY_A)  ? -1 : 0) +
+                               (input.isKeyDown(Input.KEY_RIGHT)||input.isKeyDown(Input.KEY_D) ?  1 : 0));
+        if (input.isKeyDown(Input.KEY_SPACE)||input.isKeyDown(Input.KEY_UP)||input.isKeyDown(Input.KEY_W))
             player.setShouldJump(true);
         player.move(buildings);
         {

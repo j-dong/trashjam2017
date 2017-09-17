@@ -105,7 +105,7 @@ public class Player {
         }
         if (y + IMAGE_HEIGHT + 1 >= groundY) {
             // if on ground
-            // fricion
+            // friction
             double accel = Math.copySign(FRICTION_ACCEL, -vx);
             if (FRICTION_ACCEL > Math.abs(vx))
                 vx = 0;

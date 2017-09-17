@@ -22,7 +22,7 @@ public class MainMenu extends BasicGameState {
 
     @Override
     public void enter(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        mainMenu.play();
+        mainMenu.loop();
     }
 
     @Override

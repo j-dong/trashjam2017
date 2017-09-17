@@ -26,6 +26,7 @@ import trash.objects.Building;
 import trash.objects.Bullet;
 import trash.objects.Goon;
 import trash.objects.Player;
+import trash.objects.StrongGoon;
 import trash.util.AABB;
 
 public class Game extends BasicGameState {
@@ -104,7 +105,7 @@ public class Game extends BasicGameState {
             }
         }
         mainTheme.loop();
-        Goon goon=new BasicGoon(player);
+        Goon goon=new StrongGoon(player);
         goon.init(400,0);
         goons.add(goon);
         goon=new BasicGoon(player);
@@ -202,8 +203,11 @@ public class Game extends BasicGameState {
             //g.fillOval(b.getDrawX() + Bullet.HITBOX_X, b.getDrawY() + Bullet.HITBOX_Y, Bullet.HITBOX_WIDTH, Bullet.HITBOX_HEIGHT);
             bulletAnim.draw(b.getDrawX(), b.getDrawY());
         }
-        g.setColor(Color.red);
         for (Goon go:goons) {
+            if(go instanceof BasicGoon)
+                g.setColor(Color.red);
+            else
+                g.setColor(Color.magenta);
             g.fillRect(go.getDrawX() + go.getHitboxX(), go.getDrawY() + go.getHitboxY(), go.getHitboxWidth(), go.getHitboxHeight());
         }
         cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));

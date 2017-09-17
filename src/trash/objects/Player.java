@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import trash.Application;
 import trash.states.Game;
 import trash.util.AABB;
-
+//todo: add knockback while invuln so can't run through enemy with invuln
 public class Player {
     public static final int IMAGE_WIDTH = 60, IMAGE_HEIGHT = 75;
     public static final int HITBOX_X = 10, HITBOX_Y = 10;
@@ -17,7 +17,7 @@ public class Player {
     public static final float CANNON_CENTER_Y = CANNON_HEIGHT / 2.0f, CANNON_CENTER_X = CANNON_CENTER_Y;
     public static final float CANNON_RADIUS = 40;
 
-    public static final double FRICTION_ACCEL = 1.0;
+    public static final double FRICTION_ACCEL = 0.125;
     public static final double RUN_ACCEL = 1.0;
     public static final double RUN_VELOCITY = 1.25;
     public static final double IDLE_VELOCITY = 0.25;
@@ -117,7 +117,13 @@ public class Player {
 	                {
 	                	health-=g.getDamage();
 	                	invuln=Goon.invuln_given;
-	                	x+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+	                	double kb = g.getKnockback();
+	                	if (Math.abs(vx) < kb) {
+	                		vx=Math.copySign(g.getKnockback(),x-g.getDrawX());
+	                	} else {
+	                		// do nothing
+	                	}
+	                	vx+=Math.copySign(g.getKnockback(),x-g.getDrawX());
 	                }
 	                break;
 	            }

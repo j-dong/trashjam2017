@@ -59,7 +59,7 @@ public abstract class Goon {
     
     public abstract int getDamage();
     
-    public abstract int getKnockback();
+    public abstract double getKnockback();
     
     public abstract void move(ArrayList<Building> buildings,ArrayList<Bullet> bullets);
     

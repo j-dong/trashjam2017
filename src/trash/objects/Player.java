@@ -17,7 +17,7 @@ public class Player {
     public static final float CANNON_CENTER_Y = CANNON_HEIGHT / 2.0f, CANNON_CENTER_X = CANNON_CENTER_Y;
     public static final float CANNON_RADIUS = 40;
 
-    public static final double FRICTION_ACCEL = 0.175;
+    public static final double FRICTION_ACCEL = 0.2;
     public static final double RUN_ACCEL = 1.0;
     public static final double RUN_VELOCITY = 1.25;
     public static final double IDLE_VELOCITY = 0.25;

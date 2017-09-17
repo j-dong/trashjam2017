@@ -30,7 +30,9 @@ public abstract class Goon {
     }
     public abstract Building whichBuilding(ArrayList<Building> buildings);
     
-    public abstract boolean canMove(Building b);
+    public abstract boolean canMoveLeft(Building b);
+    
+    public abstract boolean canMoveRight(Building b);
     
     public abstract void init(int x,int y);
 

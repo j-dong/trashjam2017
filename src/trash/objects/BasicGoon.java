@@ -73,8 +73,13 @@ public class BasicGoon extends GroundGoon{
     public float getDrawY() {
         return (float)y;
     }
-	public boolean canMove(Building b){
-		if(getDrawX()>b.getX1()&&getDrawX()<b.getX2())
+	public boolean canMoveLeft(Building b){
+		if(getDrawX()>b.getX1())
+			return true;
+		return false;
+	}
+	public boolean canMoveRight(Building b){
+		if(getDrawX()+50<b.getX2())
 			return true;
 		return false;
 	}
@@ -102,7 +107,7 @@ public class BasicGoon extends GroundGoon{
 		}
 		else
 		{
-			if(canMove(hitBuilding))
+			if((canMoveLeft(hitBuilding)&&vx<=0)||(canMoveRight(hitBuilding)&&vx>=0))
 			{
 					x += vx;
 			}

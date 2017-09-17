@@ -19,6 +19,8 @@ public class Player {
     public static final double JUMP_VEL = 8;
     public static final double RECOIL_VEL = 12;
     public static final int INTERSECT_MARGIN = 10;
+
+    public static final double BULLET_RADIUS = 40;
     // position
     private double x, y;
     // velocity
@@ -69,13 +71,18 @@ public class Player {
         shootAngle = Math.atan2(y - (this.y + CENTER_Y), x - (this.x + CENTER_X));
         shouldShoot = true;
     }
+    public Bullet createBullet() {
+        return new Bullet(x + CENTER_X + Math.cos(shootAngle) * BULLET_RADIUS - Bullet.CENTER_X,
+                          y + CENTER_Y + Math.sin(shootAngle) * BULLET_RADIUS - Bullet.CENTER_Y,
+                          shootAngle);
+    }
 
     public void move(ArrayList<Building> buildings,ArrayList<Goon> goons) {
+        x += vx;
     	if(invuln>0)
     	{
     		invuln--;
     	}
-        x += vx;
         double groundY = Application.HEIGHT;
         {
         	if(invuln<1)
@@ -123,6 +130,9 @@ public class Player {
         if (y + IMAGE_HEIGHT > groundY) {
             vy = 0;
             y = groundY - IMAGE_HEIGHT;
+            if (Math.abs(vx) > RUN_VELOCITY * 5) {
+                vx = Math.copySign(RUN_VELOCITY * 5, vx);
+            }
         }
         if (y + IMAGE_HEIGHT + 1 >= groundY) {
             // if on ground

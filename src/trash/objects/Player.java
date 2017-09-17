@@ -38,6 +38,7 @@ public class Player {
     private boolean onGround;
     private int invuln;
     private int health;
+    private Building building;
 
     public Player() {
     }
@@ -49,6 +50,12 @@ public class Player {
         invuln=30;
         shouldJump = false;
         onGround = true;
+        building=null;
+    }
+    
+    public Building getBuilding()
+    {
+        return building;
     }
 
     public AABB getHitbox() {
@@ -110,39 +117,21 @@ public class Player {
     	}
         double groundY = Application.HEIGHT;
         {
-        	if(invuln<1)
-        	{
-	            for (Goon g:goons) {
-	                if(getHitbox().intersects(g.getHitbox()))
-	                {
-	                	health-=g.getDamage();
-	                	invuln=Goon.invuln_given;
-	                	double kb = g.getKnockback();
-	                	if (Math.abs(vx) < kb) {
-	                		vx=Math.copySign(g.getKnockback(),x-g.getDrawX());
-	                	} else {
-	                		// do nothing
-	                	}
-	                	vx+=Math.copySign(g.getKnockback(),x-g.getDrawX());
-	                }
-	                break;
-	            }
-        	}
-            Building hitBuilding = null;
+            building = null;
             double x1 = x + HITBOX_X;
             double x2 = x1 + HITBOX_WIDTH;
             for (Building b : buildings) {
                 if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
-                    hitBuilding = b;
+                    building = b;
                     groundY = b.getY();
                 }
             }
             if (y + IMAGE_HEIGHT > groundY + INTERSECT_MARGIN) {
-                if (hitBuilding != null) {
+                if (building != null) {
                     if (vx < 0) {
-                        x = hitBuilding.getX2() - HITBOX_X + 1;
+                        x = building.getX2() - HITBOX_X + 1;
                     } else {
-                        x = hitBuilding.getX1() - HITBOX_X - HITBOX_WIDTH - 1;
+                        x = building.getX1() - HITBOX_X - HITBOX_WIDTH - 1;
                     }
                     vx = 0;
                     groundY = Application.HEIGHT;
@@ -156,6 +145,24 @@ public class Player {
                 }
             }
         }
+        for (Goon g:goons) {
+            if(getHitbox().intersects(g.getHitbox()))
+            {
+                if(invuln<1)
+                {
+                    health-=g.getDamage();
+                    invuln=Goon.invuln_given;
+                }
+                double kb = g.getKnockback();
+                if (Math.abs(vx) < kb) {
+                    vx=Math.copySign(g.getKnockback(),x-g.getDrawX());
+                } else {
+                    // do nothing
+                }
+                vx+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+            }
+            break;
+        }
         y += vy;
         vy += Game.GRAVITY;
         if (y + IMAGE_HEIGHT > groundY) {
@@ -165,6 +172,7 @@ public class Player {
                 vx = Math.copySign(RUN_VELOCITY * 5, vx);
             }
         }
+        //TODO: Decrease velocity on impact with ground
         onGround = y + IMAGE_HEIGHT + 1 >= groundY;
         if (onGround) {
             // if on ground

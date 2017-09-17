@@ -13,6 +13,10 @@ public class Player {
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
+    public static final int CANNON_WIDTH = 55, CANNON_HEIGHT = 45;
+    public static final float CANNON_CENTER_Y = CANNON_HEIGHT / 2.0f, CANNON_CENTER_X = CANNON_CENTER_Y;
+    public static final float CANNON_RADIUS = 40;
+
     public static final double FRICTION_ACCEL = 1.0;
     public static final double RUN_ACCEL = 1.0;
     public static final double RUN_VELOCITY = 1.25;
@@ -59,6 +63,10 @@ public class Player {
         return (float)y;
     }
 
+    public double getShootAngle() {
+        return shootAngle;
+    }
+
     public void setShouldJump(boolean b) {
         shouldJump = b;
     }
@@ -71,6 +79,11 @@ public class Player {
         shootAngle = Math.atan2(y - (this.y + CENTER_Y), x - (this.x + CENTER_X));
         shouldShoot = true;
     }
+
+    public void setShootAngle(double x, double y) {
+        shootAngle = Math.atan2(y - (this.y + CENTER_Y), x - (this.x + CENTER_X));
+    }
+
     public Bullet createBullet() {
         return new Bullet(x + CENTER_X + Math.cos(shootAngle) * BULLET_RADIUS - Bullet.CENTER_X,
                           y + CENTER_Y + Math.sin(shootAngle) * BULLET_RADIUS - Bullet.CENTER_Y,

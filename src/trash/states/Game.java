@@ -26,7 +26,7 @@ public class Game extends BasicGameState {
     public static final double CAMERA_VEL = 100.0;
 
     public static final int SCROLL_LEFT = 200;
-    public static final int SCROLL_RIGHT = Application.WIDTH - SCROLL_LEFT;
+    public static final int SCROLL_RIGHT = Application.WIDTH / 2;
     public static final int SCROLL_TOP = 200;
 
     private ArrayList<Building> buildings;
@@ -38,6 +38,7 @@ public class Game extends BasicGameState {
 
     // resources
     private Image playerImage;
+    private Image cannonImage;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -56,6 +57,9 @@ public class Game extends BasicGameState {
         bullets = new ArrayList<>();
         playerImage = new Image("res/player.png");
         playerImage.setFilter(Image.FILTER_NEAREST);
+        cannonImage = new Image("res/cannon.png");
+        cannonImage.setFilter(Image.FILTER_LINEAR);
+        cannonImage.setCenterOfRotation(Player.CANNON_CENTER_X, Player.CANNON_CENTER_Y);
         camx = 0;
         camy = 0;
         camvx = 0;
@@ -72,6 +76,9 @@ public class Game extends BasicGameState {
         for (Bullet b : bullets) {
             g.fillOval(b.getDrawX() + Bullet.HITBOX_X, b.getDrawY() + Bullet.HITBOX_Y, Bullet.HITBOX_WIDTH, Bullet.HITBOX_HEIGHT);
         }
+        cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));
+        cannonImage.draw(player.getDrawX() + Player.CENTER_X - Player.CANNON_CENTER_X + (float)Math.cos(player.getShootAngle()) * Player.CANNON_RADIUS,
+                         player.getDrawY() + Player.CENTER_Y - Player.CANNON_CENTER_Y + (float)Math.sin(player.getShootAngle()) * Player.CANNON_RADIUS);
     }
 
     @Override
@@ -79,6 +86,8 @@ public class Game extends BasicGameState {
         Input input = gc.getInput();
         player.setRunDirection((input.isKeyDown(Input.KEY_LEFT)||input.isKeyDown(Input.KEY_A)  ? -1 : 0) +
                                (input.isKeyDown(Input.KEY_RIGHT)||input.isKeyDown(Input.KEY_D) ?  1 : 0));
+        int mx = input.getMouseX(), my = input.getMouseY();
+        player.setShootAngle(mx + camx, my + camy);
         if (input.isKeyDown(Input.KEY_SPACE)||input.isKeyDown(Input.KEY_UP)||input.isKeyDown(Input.KEY_W))
             player.setShouldJump(true);
         player.move(buildings,goons);

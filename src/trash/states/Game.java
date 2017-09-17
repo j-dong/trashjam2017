@@ -17,7 +17,6 @@ import trash.util.AABB;
 
 public class Game extends BasicGameState {
     public static final double GRAVITY = 0.4;
-    public static final double PLAYER_X = 200;
 
     public static final double CAMERA_ACC = 1.0;
     public static final double CAMERA_VEL = 100.0;
@@ -40,7 +39,7 @@ public class Game extends BasicGameState {
         int initialGroundY = 500;
         buildings.add(new Building(100, 500, initialGroundY));
         buildings.add(new Building(700, 800, initialGroundY + 100));
-        player.init(initialGroundY);
+        player.init(200, initialGroundY);
     }
 
     @Override
@@ -63,7 +62,12 @@ public class Game extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+    public void update(GameContainer gc, StateBasedGame arg1, int arg2) throws SlickException {
+        Input input = gc.getInput();
+        player.setRunDirection((input.isKeyDown(Input.KEY_LEFT)  ? -1 : 0) +
+                               (input.isKeyDown(Input.KEY_RIGHT) ?  1 : 0));
+        if (input.isKeyDown(Input.KEY_SPACE))
+            player.setShouldJump(true);
         player.move(buildings);
         // move camera to hold player
         AABB prect = player.getHitbox();

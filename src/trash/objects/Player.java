@@ -13,7 +13,9 @@ public class Player {
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
+    public static final double FRICTION_ACCEL = 1.0;
     public static final double RUN_ACCEL = 1.0;
+    public static final double RUN_VELOCITY = 1.25;
     public static final double JUMP_VEL = 8;
     public static final double RECOIL_VEL = 12;
     public static final int INTERSECT_MARGIN = 10;
@@ -25,12 +27,13 @@ public class Player {
     private boolean shouldJump;
     private boolean shouldShoot;
     private double shootAngle; // in radians
+    private int runDirection;
 
     public Player() {
     }
 
-    public void init(int groundY) {
-        x = TARGET_X;
+    public void init(int startX, int groundY) {
+        x = startX - HITBOX_X;
         y = groundY - IMAGE_HEIGHT;
         shouldJump = false;
     }
@@ -51,6 +54,10 @@ public class Player {
 
     public void setShouldJump(boolean b) {
         shouldJump = b;
+    }
+
+    public void setRunDirection(int i) {
+        runDirection = i;
     }
 
     public void shootAt(double x, double y) {
@@ -98,13 +105,17 @@ public class Player {
         }
         if (y + IMAGE_HEIGHT + 1 >= groundY) {
             // if on ground
-            double accel = Math.copySign(RUN_ACCEL, -vx);
-            if (RUN_ACCEL > Math.abs(vx))
+            // fricion
+            double accel = Math.copySign(FRICTION_ACCEL, -vx);
+            if (FRICTION_ACCEL > Math.abs(vx))
                 vx = 0;
             else
                 vx += accel;
             if (shouldJump) {
                 vy = -JUMP_VEL;
+            }
+            if (Math.abs(vx) < RUN_VELOCITY) {
+                vx += runDirection * RUN_ACCEL;
             }
         }
         if (shouldShoot) {

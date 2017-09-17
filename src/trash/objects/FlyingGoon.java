@@ -40,6 +40,12 @@ public class FlyingGoon extends AirGoon{
                         x + HITBOX_X + HITBOX_WIDTH,
                         y + HITBOX_Y + HITBOX_HEIGHT);
     }
+
+    public AABB getTopHitbox() {
+        return new AABB(x + HITBOX_X, y + HITBOX_Y,
+                        x + HITBOX_X + 5,
+                        y + HITBOX_Y + 5);
+    }
     
     public int getHitboxX()
     {

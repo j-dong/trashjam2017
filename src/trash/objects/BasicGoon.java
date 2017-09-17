@@ -44,6 +44,12 @@ public class BasicGoon extends GroundGoon{
                         y + HITBOX_Y + HITBOX_HEIGHT);
     }
 
+    public AABB getTopHitbox() {
+        return new AABB(x + HITBOX_X, y + HITBOX_Y,
+                        x + 5,
+                        y + 5);
+    }
+
     public int getHitboxX()
     {
         return HITBOX_X;

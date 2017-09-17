@@ -24,6 +24,7 @@ import trash.Application;
 import trash.objects.BasicGoon;
 import trash.objects.Building;
 import trash.objects.Bullet;
+import trash.objects.FlyingGoon;
 import trash.objects.Goon;
 import trash.objects.Player;
 import trash.util.AABB;
@@ -107,7 +108,7 @@ public class Game extends BasicGameState {
         Goon goon=new BasicGoon(player);
         goon.init(400,0);
         goons.add(goon);
-        goon=new BasicGoon(player);
+        goon=new FlyingGoon(player);
         goon.init(700,0);
         goons.add(goon);
     }

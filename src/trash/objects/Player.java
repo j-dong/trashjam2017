@@ -162,6 +162,12 @@ public class Player {
                     // do nothing
                 }
                 vx+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+                if (Math.abs(vy) < kb) {
+                    vy=Math.copySign(g.getKnockback(),x-g.getDrawY());
+                } else {
+                    // do nothing
+                }
+                vy+=Math.copySign(g.getKnockback(),y-g.getDrawY());
                 break;
             }
         }

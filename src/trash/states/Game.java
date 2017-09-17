@@ -212,7 +212,7 @@ public class Game extends BasicGameState {
         partsys.render();
         g.setColor(Color.white);
         g.drawString("Health: "+player.getHealth(),10,10);
-        g.drawString(""+goons.get(goons.size()-1).getTargetX(),700,50);
+//        g.drawString(""+goons.get(goons.size()-1).getTargetX(),700,50);
     }
 
     @Override

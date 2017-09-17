@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import trash.states.Game;
+import trash.states.GameOver;
 import trash.states.MainMenu;
 
 public class Application extends StateBasedGame {
@@ -20,6 +21,7 @@ public class Application extends StateBasedGame {
     // game state IDs
     public static final int MAINMENU = 0;
     public static final int GAME = 1;
+    public static final int GAMEOVER = 2;
 
     public Application() {
         super(GAME_NAME);
@@ -29,6 +31,7 @@ public class Application extends StateBasedGame {
     public void initStatesList(GameContainer gc) throws SlickException {
         this.addState(new MainMenu());
         this.addState(new Game());
+        this.addState(new GameOver());
     }
     
     public static int DISPLAY_WIDTH, DISPLAY_HEIGHT;

@@ -40,13 +40,13 @@ public class Player {
     private int health;
 
     public Player() {
-    	invuln=30;
-    	health=100;
     }
 
     public void init(int startX, int groundY) {
         x = startX - HITBOX_X;
         y = groundY - IMAGE_HEIGHT;
+        health=100;
+        invuln=30;
         shouldJump = false;
         onGround = true;
     }
@@ -118,6 +118,7 @@ public class Player {
 	                	health-=g.getDamage();
 	                	invuln=Goon.invuln_given;
 	                	x+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+	                	vx=0;
 	                }
 	                break;
 	            }

@@ -42,6 +42,8 @@ public abstract class Goon {
     }
 
     public abstract void init(int x,int y);
+    
+    public abstract double getTargetX();
 
     public abstract AABB getHitbox();
     

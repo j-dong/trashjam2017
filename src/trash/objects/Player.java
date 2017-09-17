@@ -17,7 +17,7 @@ public class Player {
     public static final float CANNON_CENTER_Y = CANNON_HEIGHT / 2.0f, CANNON_CENTER_X = CANNON_CENTER_Y;
     public static final float CANNON_RADIUS = 40;
 
-    public static final double FRICTION_ACCEL = 0.125;
+    public static final double FRICTION_ACCEL = 0.2;
     public static final double RUN_ACCEL = 1.0;
     public static final double RUN_VELOCITY = 1.25;
     public static final double IDLE_VELOCITY = 0.25;
@@ -47,7 +47,9 @@ public class Player {
         x = startX - HITBOX_X;
         y = groundY - IMAGE_HEIGHT;
         health=100;
-        invuln=30;
+        invuln=0;
+        vx=0;
+        vy=0;
         shouldJump = false;
         onGround = true;
         building=null;
@@ -160,8 +162,8 @@ public class Player {
                     // do nothing
                 }
                 vx+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+                break;
             }
-            break;
         }
         y += vy;
         vy += Game.GRAVITY;

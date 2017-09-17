@@ -53,9 +53,25 @@ public class BasicGoon extends GroundGoon{
     public float getDrawY() {
         return (float)y;
     }
-	
+	public boolean canMove(Building b){
+		if(getDrawX()>b.getX1()&&getDrawX()<b.getX2())
+			return true;
+		return false;
+	}
+	public Building whichBuilding(ArrayList<Building> buildings){
+		Building hitBuilding = null;
+        double x1 = x + HITBOX_X;
+        double x2 = x1 + HITBOX_WIDTH;
+        for (Building b : buildings) {
+            if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < Application.HEIGHT) {
+                return b;
+            }
+        }
+        return null;
+	}
 	public void move(ArrayList<Building> buildings) {
 		targetX=player.getDrawX()+Player.CENTER_X;
+		Building hitBuilding = whichBuilding(buildings);
 		if(Math.abs(vx)>Math.abs(targetX-x))
 		{
 			x=targetX;
@@ -63,7 +79,10 @@ public class BasicGoon extends GroundGoon{
 		}
 		else
 		{
-			x += vx;
+			if(canMove(hitBuilding))
+			{
+					x += vx;
+			}
 		}
 		if(getHitbox().intersects(player.getHitbox()))
 		{
@@ -74,31 +93,25 @@ public class BasicGoon extends GroundGoon{
 			attacking=false;
 		}
         double groundY = Application.HEIGHT;
-        {
-            Building hitBuilding = null;
-            double x1 = x + HITBOX_X;
-            double x2 = x1 + HITBOX_WIDTH;
-            for (Building b : buildings) {
-                if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
-                    hitBuilding = b;
-                    groundY = b.getY();
+        
+        double x1 = x + HITBOX_X;
+        double x2 = x1 + HITBOX_WIDTH;
+        groundY = hitBuilding.getY();
+        
+        if (y + IMAGE_HEIGHT > groundY + INTERSECT_MARGIN) {
+            if (hitBuilding != null) {
+                if (vx < 0) {
+                    x = hitBuilding.getX2() - HITBOX_X + 1;
+                } else {
+                    x = hitBuilding.getX1() - HITBOX_X - HITBOX_WIDTH - 1;
                 }
-            }
-            if (y + IMAGE_HEIGHT > groundY + INTERSECT_MARGIN) {
-                if (hitBuilding != null) {
-                    if (vx < 0) {
-                        x = hitBuilding.getX2() - HITBOX_X + 1;
-                    } else {
-                        x = hitBuilding.getX1() - HITBOX_X - HITBOX_WIDTH - 1;
-                    }
-                    vx = 0;
-                    groundY = Application.HEIGHT;
-                    x1 = x + HITBOX_X;
-                    x2 = x1 + HITBOX_WIDTH;
-                    for (Building b : buildings) {
-                        if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
-                            groundY = b.getY();
-                        }
+                vx = 0;
+                groundY = Application.HEIGHT;
+                x1 = x + HITBOX_X;
+                x2 = x1 + HITBOX_WIDTH;
+                for (Building b : buildings) {
+                    if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
+                        groundY = b.getY();
                     }
                 }
             }
@@ -117,7 +130,7 @@ public class BasicGoon extends GroundGoon{
             {
             	accel=Math.copySign(RUN_ACCEL,accel);
             }
-            vx+=accel;
+            	vx+=accel;
             if(Math.abs(vx)>RUN_SPEED)
             {
             	vx=Math.copySign(RUN_SPEED,vx);

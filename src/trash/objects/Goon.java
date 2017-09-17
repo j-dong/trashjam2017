@@ -28,7 +28,10 @@ public abstract class Goon {
     {
     	return attacking;
     }
-
+    public abstract Building whichBuilding(ArrayList<Building> buildings);
+    
+    public abstract boolean canMove(Building b);
+    
     public abstract void init(int x,int y);
 
     public abstract AABB getHitbox();

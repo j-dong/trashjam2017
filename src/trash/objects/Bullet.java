@@ -6,6 +6,9 @@ import trash.Application;
 import trash.util.AABB;
 
 public class Bullet {
+    public static enum DeathCause {
+        ENEMY, WALL, BOUNDS, LIFE
+    }
     public static final int IMAGE_WIDTH = 30, IMAGE_HEIGHT = 30;
     public static final int HITBOX_X = 0, HITBOX_Y = 0;
     public static final int HITBOX_WIDTH = 30, HITBOX_HEIGHT = 30;
@@ -19,6 +22,7 @@ public class Bullet {
 
     private boolean dead;
     private boolean deadNext;
+    private DeathCause deathCause;
 
     public Bullet(double x, double y, double angle) {
         this.x = x;
@@ -37,25 +41,32 @@ public class Bullet {
         if(deadNext==true)
         {
             dead=true;
+            return;
         }
         AABB hitbox = getHitbox();
         for (Building b : buildings) {
             if (b.getHitbox().intersects(hitbox)) {
                 dead = true;
-                break;
+                deathCause = DeathCause.WALL;
+                return;
             }
         }
         for (Goon g:goons) {
             if (g.getHitbox().intersects(hitbox)) {
                 deadNext = true;
-                break;
+                deathCause = DeathCause.ENEMY;
+                return;
             }
         }
         if (hitbox.y1 > Application.HEIGHT || hitbox.x2 < -1000 || hitbox.y2 < -1000) {
             dead = true;
+            deathCause = DeathCause.BOUNDS;
+            return;
         }
-        if (life <= 0)
+        if (life <= 0) {
             dead = true;
+            deathCause = DeathCause.LIFE;
+        }
     }
 
     public float getDrawX() {
@@ -64,7 +75,7 @@ public class Bullet {
     public float getDrawY() {
         return (float)y;
     }
-    
+
 
     public AABB getHitbox() {
         return new AABB(x + HITBOX_X, y + HITBOX_Y,
@@ -74,5 +85,9 @@ public class Bullet {
 
     public boolean shouldExplodeAndDie() {
         return dead;
+    }
+
+    public DeathCause getDeathCause() {
+        return deathCause;
     }
 }

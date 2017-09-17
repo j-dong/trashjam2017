@@ -1,5 +1,8 @@
 package trash.objects;
 
+import trash.Application;
+import trash.util.AABB;
+
 public class Building {
     private double x1, x2, y;
 
@@ -24,5 +27,9 @@ public class Building {
 
     public double getY() {
         return y;
+    }
+
+    public AABB getHitbox() {
+        return new AABB(x1, y, x2, Application.HEIGHT);
     }
 }

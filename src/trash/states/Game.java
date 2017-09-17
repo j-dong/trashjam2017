@@ -35,10 +35,24 @@ public class Game extends BasicGameState {
     public static final int RUN_ANIMATION_SPEED = 100;
     public static final int BULLET_ANIMATION_SPEED = 40;
 
+    public static final double GRAFFITI_MAX_DENSITY = 0.1;
+    public static final int NUM_GRAFFITI = 5;
+
+    private static class Graffito {
+        public int x, y, index, rotation;
+        public Graffito(int x, int y, int i) {
+            this.x = x;
+            this.y = y;
+            this.index = i;
+            rotation = (int)(Math.random() * 4) * 90;
+        }
+    }
+
     private ArrayList<Building> buildings;
     private ArrayList<Goon> goons;
     private Player player;
     private ArrayList<Bullet> bullets;
+    private ArrayList<Graffito> graffiti;
 
     private double camx, camy, camvx;
 
@@ -50,6 +64,7 @@ public class Game extends BasicGameState {
     private Animation bulletAnim;
     private Image buildingTexture;
     private Image buildingLastRow;
+    private Image[] graffitiImages;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -58,6 +73,21 @@ public class Game extends BasicGameState {
         buildings.add(new Building(100, 500, initialGroundY));
         buildings.add(new Building(700, 800, initialGroundY + 100));
         player.init(200, initialGroundY);
+        for (Building b : buildings) {
+            int ngraffiti = (int)(Math.random() * Math.ceil(b.getX2() - b.getX1()) * GRAFFITI_MAX_DENSITY);
+            double x1 = b.getX1();
+            double width = b.getX2() - x1;
+            double height = Application.HEIGHT - b.getY();
+            for (int i = 0; i < ngraffiti; i++) {
+                // we have 2 copies of each image
+                int index = (int)(Math.random() * NUM_GRAFFITI * 2);
+                int gw = graffitiImages[index].getWidth(),
+                    gh = graffitiImages[index].getHeight();
+                double x = Math.random() * (width - gw)  + x1,
+                       y = Math.random() * (height - gh) + b.getY();
+                graffiti.add(new Graffito((int)x, (int)y, index));
+            }
+        }
     }
 
     @Override
@@ -85,6 +115,12 @@ public class Game extends BasicGameState {
         buildingLastRow = buildingTexture.getSubImage(0, buildingTexture.getHeight() - 1, buildingTexture.getWidth(), 1);
         buildingTexture.setFilter(Image.FILTER_NEAREST);
         buildingLastRow.setFilter(Image.FILTER_NEAREST);
+        graffitiImages = new Image[NUM_GRAFFITI * 2];
+        for (int i = 0; i < NUM_GRAFFITI; i++) {
+            graffitiImages[i] = new Image("res/graffiti" + i + ".png");
+            graffitiImages[i + NUM_GRAFFITI] = graffitiImages[i].getFlippedCopy(true, false);
+        }
+        graffiti = new ArrayList<>();
         camx = 0;
         camy = 0;
         camvx = 0;
@@ -117,6 +153,8 @@ public class Game extends BasicGameState {
         g.setColor(Color.white);
         for (Building b : buildings)
             drawBuilding(g, b);
+        for (Graffito gr : graffiti)
+            drawGraffito(g, gr);
         g.setColor(Color.cyan);
         for (Bullet b : bullets) {
             //g.fillOval(b.getDrawX() + Bullet.HITBOX_X, b.getDrawY() + Bullet.HITBOX_Y, Bullet.HITBOX_WIDTH, Bullet.HITBOX_HEIGHT);
@@ -173,6 +211,11 @@ public class Game extends BasicGameState {
         float bh = Application.HEIGHT - (float)b.getY();
         buildingTexture.draw((float)b.getX1(), (float)b.getY(), bw, buildingTexture.getHeight());
         buildingLastRow.draw((float)b.getX1(), (float)b.getY() + buildingTexture.getHeight() - 1, bw, 1 + bh - buildingTexture.getHeight());
+    }
+
+    private void drawGraffito(Graphics g, Graffito gr) {
+        graffitiImages[gr.index].setRotation(gr.rotation);
+        graffitiImages[gr.index].draw(gr.x, gr.y);
     }
 
     @Override

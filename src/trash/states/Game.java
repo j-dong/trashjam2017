@@ -99,6 +99,14 @@ public class Game extends BasicGameState {
         Goon goon=new BasicGoon(player);
         goon.init(400,0);
         goons.add(goon);
+        goon=new BasicGoon(player);
+        goon.init(700,0);
+        goons.add(goon);
+    }
+    
+    public double getCamX()
+    {
+        return camx;
     }
 
     @Override

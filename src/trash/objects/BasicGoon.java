@@ -19,6 +19,8 @@ public class BasicGoon extends GroundGoon{
     
     public static final int DAMAGE=10;
     public static final double KNOCKBACK=2.5;
+    
+    private boolean aggro=false;
 	
     public BasicGoon(Player play) {
 		super(play);
@@ -28,6 +30,7 @@ public class BasicGoon extends GroundGoon{
 	public void init(int startX,int groundY) {
         x = startX;
         y = groundY - IMAGE_HEIGHT;
+        targetX=(((int)(Math.random()*9999)&1)==0) ? 0 : Application.WIDTH;
     }
 
     public AABB getHitbox() {
@@ -85,7 +88,6 @@ public class BasicGoon extends GroundGoon{
 		return false;
 	}
 	public Building whichBuilding(ArrayList<Building> buildings){
-		Building hitBuilding = null;
         double x1 = x + HITBOX_X;
         double x2 = x1 + HITBOX_WIDTH;
         for (Building b : buildings) {
@@ -103,10 +105,18 @@ public class BasicGoon extends GroundGoon{
 	        return;
 	    }
 		Building hitBuilding = whichBuilding(buildings);
-	    if(player.getInvuln()<1)
-	        targetX=player.getDrawX()+Player.CENTER_X;
-	    else
-	        targetX=x;
+		if(player.getBuilding()!=null&&player.getBuilding().equals(hitBuilding)
+		        &&player.getDrawY()+Player.HITBOX_Y+Player.HITBOX_HEIGHT<=y+HITBOX_Y)
+		{
+		    aggro=true;
+		}
+		if(aggro)
+		{
+    	    if(player.getInvuln()<1)
+    	        targetX=player.getDrawX()+Player.CENTER_X;
+    	    else
+    	        targetX=x;
+		}
 		if(Math.abs(vx)>Math.abs(targetX-x))
 		{
 			x=targetX;
@@ -117,6 +127,19 @@ public class BasicGoon extends GroundGoon{
 			if((canMoveLeft(hitBuilding)&&vx<=0)||(canMoveRight(hitBuilding)&&vx>=0))
 			{
 					x += vx;
+			}
+			else
+			{
+			    if(!canMoveLeft(hitBuilding)&&vx<=0)
+	            {
+	                targetX=hitBuilding.getX2();
+	                aggro=false;
+	            }
+	            else
+	            {
+                    targetX=hitBuilding.getX1();
+                    aggro=false;
+	            }
 			}
 		}
 		if(getHitbox().intersects(player.getHitbox()))

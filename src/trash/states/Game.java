@@ -16,9 +16,10 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import trash.Application;
+import trash.objects.BasicGoon;
 import trash.objects.Building;
-import trash.objects.Goon;
 import trash.objects.Bullet;
+import trash.objects.Goon;
 import trash.objects.Player;
 import trash.util.AABB;
 
@@ -48,6 +49,8 @@ public class Game extends BasicGameState {
     private Animation playerRunRight;
     private Animation playerRunLeft;
     private Animation bulletAnim;
+    private Image buildingTexture;
+    private Image buildingLastRow;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -56,6 +59,9 @@ public class Game extends BasicGameState {
         buildings.add(new Building(100, 500, initialGroundY));
         buildings.add(new Building(700, 800, initialGroundY + 100));
         player.init(200, initialGroundY);
+        Goon goon=new BasicGoon(player);
+        goon.init(400,0);
+        goons.add(goon);
     }
 
     @Override
@@ -79,13 +85,21 @@ public class Game extends BasicGameState {
             }
         }
         bulletAnim = new Animation(new SpriteSheet("res/bullet.png", 30, 30), BULLET_ANIMATION_SPEED);
+        buildingTexture = new Image("res/building.png");
+        buildingLastRow = buildingTexture.getSubImage(0, buildingTexture.getHeight() - 1, buildingTexture.getWidth(), 1);
+        buildingTexture.setFilter(Image.FILTER_NEAREST);
+        buildingLastRow.setFilter(Image.FILTER_NEAREST);
         camx = 0;
         camy = 0;
         camvx = 0;
     }
 
+    private Color backgroundColor = new Color(114, 135, 112);
+
     @Override
     public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
+        g.setBackground(backgroundColor);
+        g.clear();
         g.translate(-(float)camx, -(float)camy);
         Renderable playerToDraw;
         switch (player.getAnimationState()) {
@@ -112,9 +126,16 @@ public class Game extends BasicGameState {
             //g.fillOval(b.getDrawX() + Bullet.HITBOX_X, b.getDrawY() + Bullet.HITBOX_Y, Bullet.HITBOX_WIDTH, Bullet.HITBOX_HEIGHT);
             bulletAnim.draw(b.getDrawX(), b.getDrawY());
         }
+        g.setColor(Color.red);
+        for (Goon go:goons) {
+            go.move(buildings);
+            g.fillRect(go.getDrawX() + go.getHitboxX(), go.getDrawY() + go.getHitboxY(), go.getHitboxWidth(), go.getHitboxHeight());
+        }
         cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));
         cannonImage.draw(player.getDrawX() + Player.CENTER_X - Player.CANNON_CENTER_X + (float)Math.cos(player.getShootAngle()) * Player.CANNON_RADIUS,
                          player.getDrawY() + Player.CENTER_Y - Player.CANNON_CENTER_Y + (float)Math.sin(player.getShootAngle()) * Player.CANNON_RADIUS);
+        g.setColor(Color.white);
+        g.drawString("Health: "+player.getHealth(),10,10);
     }
 
     @Override
@@ -159,8 +180,10 @@ public class Game extends BasicGameState {
     }
 
     private void drawBuilding(Graphics g, Building b) {
-        g.fillRect((float)b.getX1(), (float)b.getY(),
-                (float)b.getX2() - (float)b.getX1(), (float)(Application.HEIGHT - b.getY()));
+        float bw = (float)(b.getX2() - b.getX1());
+        float bh = Application.HEIGHT - (float)b.getY();
+        buildingTexture.draw((float)b.getX1(), (float)b.getY(), bw, buildingTexture.getHeight());
+        buildingLastRow.draw((float)b.getX1(), (float)b.getY() + buildingTexture.getHeight() - 1, bw, 1 + bh - buildingTexture.getHeight());
     }
 
     @Override

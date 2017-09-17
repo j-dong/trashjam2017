@@ -64,7 +64,17 @@ public class Player {
     public float getDrawY() {
         return (float)y;
     }
+    
+    public int getHealth()
+    {
+        return health;
+    }
 
+    public int getInvuln()
+    {
+        return invuln;
+    }
+    
     public double getShootAngle() {
         return shootAngle;
     }

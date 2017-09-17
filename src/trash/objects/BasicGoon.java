@@ -9,16 +9,16 @@ import trash.util.AABB;
 public class BasicGoon extends GroundGoon{
 
 	public static final int IMAGE_WIDTH=50, IMAGE_HEIGHT=50;
-    public static final int HITBOX_X=50, HITBOX_Y=50;
+    public static final int HITBOX_X=0, HITBOX_Y=0;
     public static final int HITBOX_WIDTH=50, HITBOX_HEIGHT = IMAGE_HEIGHT - HITBOX_Y;
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
-    public static final double RUN_SPEED=25;
+    public static final double RUN_SPEED=5;
     public static final double RUN_ACCEL=1;
     
     public static final int DAMAGE=10;
-    public static final int KNOCKBACK=50;
+    public static final int KNOCKBACK=75;
 	
     public BasicGoon(Player play) {
 		super(play);
@@ -34,6 +34,26 @@ public class BasicGoon extends GroundGoon{
         return new AABB(x + HITBOX_X, y + HITBOX_Y,
                         x + HITBOX_X + HITBOX_WIDTH,
                         y + HITBOX_Y + HITBOX_HEIGHT);
+    }
+    
+    public int getHitboxX()
+    {
+        return HITBOX_X;
+    }
+    
+    public int getHitboxY()
+    {
+        return HITBOX_Y;
+    }
+    
+    public int getHitboxWidth()
+    {
+        return HITBOX_WIDTH;
+    }
+    
+    public int getHitboxHeight()
+    {
+        return HITBOX_HEIGHT;
     }
 
     public float getDrawX() {
@@ -70,8 +90,11 @@ public class BasicGoon extends GroundGoon{
         return null;
 	}
 	public void move(ArrayList<Building> buildings) {
-		targetX=player.getDrawX()+Player.CENTER_X;
 		Building hitBuilding = whichBuilding(buildings);
+	    if(player.getInvuln()<1)
+	        targetX=player.getDrawX()+Player.CENTER_X;
+	    else
+	        targetX=x;
 		if(Math.abs(vx)>Math.abs(targetX-x))
 		{
 			x=targetX;
@@ -125,7 +148,7 @@ public class BasicGoon extends GroundGoon{
         if (y + IMAGE_HEIGHT + 1 >= groundY) {
             // if on ground
             double target_vel=targetX-x;
-            double accel=vx-target_vel;
+            double accel=target_vel-vx;
             if(Math.abs(accel)>RUN_ACCEL)
             {
             	accel=Math.copySign(RUN_ACCEL,accel);

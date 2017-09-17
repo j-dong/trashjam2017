@@ -39,7 +39,7 @@ public class Game extends BasicGameState {
 
     public static final double GRAFFITI_MAX_DENSITY = 0.1;
     public static final int NUM_GRAFFITI = 5;
-
+    public static final int MIN_NUM_GRAFFITI = 3;
     private static class Graffito {
         public int x, y, index, rotation;
         public Graffito(int x, int y, int i) {
@@ -81,6 +81,7 @@ public class Game extends BasicGameState {
         player.init(200, initialGroundY);
         for (Building b : buildings) {
             int ngraffiti = (int)(Math.random() * Math.ceil(b.getX2() - b.getX1()) * GRAFFITI_MAX_DENSITY);
+            if(ngraffiti<MIN_NUM_GRAFFITI)ngraffiti=MIN_NUM_GRAFFITI;
             double x1 = b.getX1();
             double width = b.getX2() - x1;
             double height = Application.HEIGHT - b.getY();

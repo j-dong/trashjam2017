@@ -73,6 +73,8 @@ public class Game extends BasicGameState {
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         buildings.clear();
+        bullets.clear();
+        goons.clear();
         int initialGroundY = 500;
         buildings.add(new Building(100, 500, initialGroundY));
         buildings.add(new Building(700, 800, initialGroundY + 100));
@@ -187,7 +189,7 @@ public class Game extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer gc, StateBasedGame arg1, int arg2) throws SlickException {
+    public void update(GameContainer gc, StateBasedGame sbg, int arg2) throws SlickException {
         Input input = gc.getInput();
         player.setRunDirection((input.isKeyDown(Input.KEY_LEFT)||input.isKeyDown(Input.KEY_A)  ? -1 : 0) +
                                (input.isKeyDown(Input.KEY_RIGHT)||input.isKeyDown(Input.KEY_D) ?  1 : 0));
@@ -230,6 +232,10 @@ public class Game extends BasicGameState {
         playerRunRight.update(1);
         playerRunLeft.update(1);
         bulletAnim.update(1);
+        if(player.getHealth()<1)
+        {
+            sbg.enterState(Application.GAMEOVER);
+        }
     }
 
     @Override

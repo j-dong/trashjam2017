@@ -18,7 +18,7 @@ public class BasicGoon extends GroundGoon{
     public static final double RUN_ACCEL=1;
     
     public static final int DAMAGE=10;
-    public static final double KNOCKBACK=2;
+    public static final double KNOCKBACK=2.5;
 	
     public BasicGoon(Player play) {
 		super(play);

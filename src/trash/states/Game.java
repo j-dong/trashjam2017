@@ -128,7 +128,6 @@ public class Game extends BasicGameState {
         }
         g.setColor(Color.red);
         for (Goon go:goons) {
-            go.move(buildings);
             g.fillRect(go.getDrawX() + go.getHitboxX(), go.getDrawY() + go.getHitboxY(), go.getHitboxWidth(), go.getHitboxHeight());
         }
         cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));
@@ -153,10 +152,20 @@ public class Game extends BasicGameState {
             while (it.hasNext()) {
                 Bullet b = it.next();
                 b.move();
-                b.collide(buildings);
+                b.collide(buildings,goons);
                 if (b.shouldExplodeAndDie()) {
                     it.remove();
                 }
+            }
+        }
+        {
+        Iterator<Goon> it=goons.iterator();
+            while(it.hasNext())
+            {
+                Goon go=it.next();
+                go.move(buildings,bullets);
+                if(go.isDead())
+                     it.remove();
             }
         }
         // move camera to hold player

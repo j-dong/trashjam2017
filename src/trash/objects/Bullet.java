@@ -18,6 +18,7 @@ public class Bullet {
     private int life = Application.FPS * 3;
 
     private boolean dead;
+    private boolean deadNext;
 
     public Bullet(double x, double y, double angle) {
         this.x = x;
@@ -32,11 +33,21 @@ public class Bullet {
         life--;
     }
 
-    public void collide(ArrayList<Building> buildings) {
+    public void collide(ArrayList<Building> buildings,ArrayList<Goon> goons) {
+        if(deadNext==true)
+        {
+            dead=true;
+        }
         AABB hitbox = getHitbox();
         for (Building b : buildings) {
             if (b.getHitbox().intersects(hitbox)) {
                 dead = true;
+                break;
+            }
+        }
+        for (Goon g:goons) {
+            if (g.getHitbox().intersects(hitbox)) {
+                deadNext = true;
                 break;
             }
         }
@@ -53,6 +64,7 @@ public class Bullet {
     public float getDrawY() {
         return (float)y;
     }
+    
 
     public AABB getHitbox() {
         return new AABB(x + HITBOX_X, y + HITBOX_Y,

@@ -1,5 +1,6 @@
 package trash.states;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -13,6 +14,9 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.particles.ConfigurableEmitter;
+import org.newdawn.slick.particles.ParticleIO;
+import org.newdawn.slick.particles.ParticleSystem;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -40,6 +44,7 @@ public class Game extends BasicGameState {
     public static final double GRAFFITI_MAX_DENSITY = 0.1;
     public static final int NUM_GRAFFITI = 5;
     public static final int MIN_NUM_GRAFFITI = 3;
+
     private static class Graffito {
         public int x, y, index, rotation;
         public Graffito(int x, int y, int i) {
@@ -55,6 +60,9 @@ public class Game extends BasicGameState {
     private Player player;
     private ArrayList<Bullet> bullets;
     private ArrayList<Graffito> graffiti;
+
+    private ParticleSystem partsys;
+    private ConfigurableEmitter fireExplosion, blueExplosion;
 
     private double camx, camy, camvx;
 
@@ -138,6 +146,15 @@ public class Game extends BasicGameState {
         }
         graffiti = new ArrayList<>();
         mainTheme = new Music("res/main.ogg");
+        try {
+            partsys = ParticleIO.loadConfiguredSystem("res/particle.xml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fireExplosion = (ConfigurableEmitter)partsys.getEmitter(0);
+        blueExplosion = (ConfigurableEmitter)partsys.getEmitter(1);
+        fireExplosion.setEnabled(false);
+        blueExplosion.setEnabled(false);
         camx = 0;
         camy = 0;
         camvx = 0;
@@ -184,12 +201,13 @@ public class Game extends BasicGameState {
         cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));
         cannonImage.draw(player.getDrawX() + Player.CENTER_X - Player.CANNON_CENTER_X + (float)Math.cos(player.getShootAngle()) * Player.CANNON_RADIUS,
                          player.getDrawY() + Player.CENTER_Y - Player.CANNON_CENTER_Y + (float)Math.sin(player.getShootAngle()) * Player.CANNON_RADIUS);
+        partsys.render();
         g.setColor(Color.white);
         g.drawString("Health: "+player.getHealth(),10,10);
     }
 
     @Override
-    public void update(GameContainer gc, StateBasedGame sbg, int arg2) throws SlickException {
+    public void update(GameContainer gc, StateBasedGame sbg, int dt) throws SlickException {
         Input input = gc.getInput();
         player.setRunDirection((input.isKeyDown(Input.KEY_LEFT)||input.isKeyDown(Input.KEY_A)  ? -1 : 0) +
                                (input.isKeyDown(Input.KEY_RIGHT)||input.isKeyDown(Input.KEY_D) ?  1 : 0));
@@ -205,6 +223,8 @@ public class Game extends BasicGameState {
                 b.move();
                 b.collide(buildings,goons);
                 if (b.shouldExplodeAndDie()) {
+                    createBlueExplosion(b.getDrawX() + Bullet.CENTER_X,
+                                        b.getDrawY() + Bullet.CENTER_Y);
                     it.remove();
                 }
             }
@@ -232,6 +252,7 @@ public class Game extends BasicGameState {
         playerRunRight.update(1);
         playerRunLeft.update(1);
         bulletAnim.update(1);
+        partsys.update(dt);
         if(player.getHealth()<1)
         {
             sbg.enterState(Application.GAMEOVER);
@@ -293,5 +314,19 @@ public class Game extends BasicGameState {
             }
         }
         camx += camvx;
+    }
+
+    private void createFireExplosion(float x, float y) {
+        ConfigurableEmitter e = fireExplosion.duplicate();
+        e.setEnabled(true);
+        e.setPosition(x, y);
+        partsys.addEmitter(e);
+    }
+
+    private void createBlueExplosion(float x, float y) {
+        ConfigurableEmitter e = blueExplosion.duplicate();
+        e.setEnabled(true);
+        e.setPosition(x, y);
+        partsys.addEmitter(e);
     }
 }

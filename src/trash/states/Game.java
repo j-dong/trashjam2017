@@ -1,9 +1,14 @@
 package trash.states;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -26,6 +31,7 @@ import trash.objects.Building;
 import trash.objects.Bullet;
 import trash.objects.FlyingGoon;
 import trash.objects.Goon;
+import trash.objects.GoonFactory;
 import trash.objects.Player;
 import trash.objects.StrongGoon;
 import trash.util.AABB;
@@ -95,10 +101,32 @@ public class Game extends BasicGameState {
         buildings.clear();
         bullets.clear();
         goons.clear();
-        int initialGroundY = 500;
-        buildings.add(new Building(100, 500, initialGroundY));
-        buildings.add(new Building(700, 800, initialGroundY + 100));
-        player.init(200, initialGroundY);
+        try {
+            // load level from JSON
+            JSONParser parser = new JSONParser();
+            JSONObject root = (JSONObject)parser.parse(new FileReader("res/level.json"));
+            JSONArray jsonbuildings = (JSONArray)root.get("buildings");
+            for (Object obj : jsonbuildings) {
+                JSONObject build = (JSONObject)obj;
+                int x1 = (int)(long)(Long)build.get("x1"),
+                    x2 = (int)(long)(Long)build.get("x2"),
+                    y  = (int)(long)(Long)build.get("y");
+                buildings.add(new Building(x1, x2, y));
+            }
+            JSONArray jsongoons = (JSONArray)root.get("goons");
+            GoonFactory fac = new GoonFactory();
+            for (Object obj : jsongoons) {
+                JSONObject go = (JSONObject)obj;
+                String type = (String)go.get("type");
+                int x = (int)(long)(Long)go.get("x"),
+                    y = (int)(long)(Long)go.get("y");
+                goons.add(fac.makeGoon(type, player, x, y));
+            }
+        } catch (Exception e) {
+            System.err.println("error loading level");
+            e.printStackTrace();
+        }
+        player.init(200, 0);
         for (Building b : buildings) {
             int ngraffiti = (int)(Math.random() * Math.ceil(b.getX2() - b.getX1()) * GRAFFITI_MAX_DENSITY);
             if(ngraffiti<MIN_NUM_GRAFFITI)ngraffiti=MIN_NUM_GRAFFITI;
@@ -184,7 +212,7 @@ public class Game extends BasicGameState {
         hurtSound = new Sound("res/hurt.ogg");
         basicGoon = new Image("res/plasticbag.png");
         strongGoon = new Image("res/trashbag.png");
-        flyingGoon = new Animation(new SpriteSheet("res/tshirt.png", 50, 50), 200); // TODO
+        flyingGoon = new Animation(new SpriteSheet("res/tshirt.png", 50, 50), 200);
         background = new Image("res/sunset.png");
         background.setFilter(Image.FILTER_NEAREST);
         camx = 0;

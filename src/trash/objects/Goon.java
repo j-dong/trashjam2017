@@ -16,6 +16,7 @@ public abstract class Goon {
     protected boolean attacking;
     protected int health;
     protected double knockback;
+    protected boolean dead; 
     
     public static final int invuln_given=30;
     
@@ -34,6 +35,12 @@ public abstract class Goon {
     
     public abstract boolean canMoveRight(Building b);
     
+    
+    public boolean isDead()
+    {
+        return dead;
+    }
+
     public abstract void init(int x,int y);
 
     public abstract AABB getHitbox();
@@ -54,6 +61,6 @@ public abstract class Goon {
     
     public abstract int getKnockback();
     
-    public abstract void move(ArrayList<Building> buildings);
+    public abstract void move(ArrayList<Building> buildings,ArrayList<Bullet> bullets);
     
 }

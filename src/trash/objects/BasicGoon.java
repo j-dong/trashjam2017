@@ -14,7 +14,7 @@ public class BasicGoon extends GroundGoon{
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
-    public static final double RUN_SPEED=5;
+    public static final double RUN_SPEED=1;
     public static final double RUN_ACCEL=1;
     
     public static final int DAMAGE=10;
@@ -73,6 +73,7 @@ public class BasicGoon extends GroundGoon{
     public float getDrawY() {
         return (float)y;
     }
+
 	public boolean canMoveLeft(Building b){
 		if(getDrawX()>b.getX1())
 			return true;
@@ -94,7 +95,13 @@ public class BasicGoon extends GroundGoon{
         }
         return null;
 	}
-	public void move(ArrayList<Building> buildings) {
+	
+	public void move(ArrayList<Building> buildings,ArrayList<Bullet> bullets) {
+	    if(health<1)
+	    {
+	        dead=true;
+	        return;
+	    }
 		Building hitBuilding = whichBuilding(buildings);
 	    if(player.getInvuln()<1)
 	        targetX=player.getDrawX()+Player.CENTER_X;
@@ -119,6 +126,14 @@ public class BasicGoon extends GroundGoon{
 		else
 		{
 			attacking=false;
+		}
+		for(Bullet bill:bullets)
+		{
+		    if(getHitbox().intersects(bill.getHitbox()))
+		    {
+		        health--;
+                x+=Math.copySign(50,x-bill.getDrawX());
+		    }
 		}
         double groundY = Application.HEIGHT;
         

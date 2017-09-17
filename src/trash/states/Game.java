@@ -11,7 +11,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
-import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
@@ -186,22 +185,25 @@ public class Game extends BasicGameState {
         g.setBackground(backgroundColor);
         g.clear();
         g.translate(-(float)camx, -(float)camy);
-        Renderable playerToDraw;
+        Image playerToDraw;
         switch (player.getAnimationState()) {
         case IDLE:
         case JUMP:
             playerToDraw = playerImage;
             break;
         case RUN_LEFT:
-            playerToDraw = playerRunLeft;
+            playerToDraw = playerRunLeft.getCurrentFrame();
             break;
         case RUN_RIGHT:
-            playerToDraw = playerRunRight;
+            playerToDraw = playerRunRight.getCurrentFrame();
             break;
         default:
             playerToDraw = playerImage;
         }
-        playerToDraw.draw(player.getDrawX(), player.getDrawY());
+        if (player.shouldFlash())
+            playerToDraw.drawFlash(player.getDrawX(), player.getDrawY());
+        else
+            playerToDraw.draw(player.getDrawX(), player.getDrawY());
         // playerImage.draw(player.getDrawX(), player.getDrawY());
         g.setColor(Color.white);
         for (Building b : buildings)

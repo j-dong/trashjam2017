@@ -26,6 +26,8 @@ public class Player {
     public static final int INTERSECT_MARGIN = 10;
 
     public static final double BULLET_RADIUS = 40;
+    public static final int FLASH_FRAMES = 5;
+
     // position
     private double x, y;
     // velocity
@@ -54,7 +56,7 @@ public class Player {
         onGround = true;
         building=null;
     }
-    
+
     public Building getBuilding()
     {
         return building;
@@ -73,7 +75,7 @@ public class Player {
     public float getDrawY() {
         return (float)y;
     }
-    
+
     public int getHealth()
     {
         return health;
@@ -83,7 +85,11 @@ public class Player {
     {
         return invuln;
     }
-    
+
+    public boolean shouldFlash() {
+        return invuln % (2 * FLASH_FRAMES) >= FLASH_FRAMES;
+    }
+
     public double getShootAngle() {
         return shootAngle;
     }

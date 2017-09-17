@@ -88,7 +88,7 @@ public class BasicGoon extends GroundGoon{
 		return false;
 	}
 	public boolean canMoveRight(Building b){
-		if(getDrawX()+IMAGE_WIDTH<b.getX2())
+		if(getDrawX()+HITBOX_WIDTH<b.getX2())
 			return true;
 		return false;
 	}

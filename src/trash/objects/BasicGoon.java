@@ -73,6 +73,28 @@ public class BasicGoon extends GroundGoon{
     public float getDrawY() {
         return (float)y;
     }
+
+	public boolean canMoveLeft(Building b){
+		if(getDrawX()>b.getX1())
+			return true;
+		return false;
+	}
+	public boolean canMoveRight(Building b){
+		if(getDrawX()+50<b.getX2())
+			return true;
+		return false;
+	}
+	public Building whichBuilding(ArrayList<Building> buildings){
+		Building hitBuilding = null;
+        double x1 = x + HITBOX_X;
+        double x2 = x1 + HITBOX_WIDTH;
+        for (Building b : buildings) {
+            if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < Application.HEIGHT) {
+                return b;
+            }
+        }
+        return null;
+	}
 	
 	public void move(ArrayList<Building> buildings,ArrayList<Bullet> bullets) {
 	    if(health<1)
@@ -80,6 +102,7 @@ public class BasicGoon extends GroundGoon{
 	        dead=true;
 	        return;
 	    }
+		Building hitBuilding = whichBuilding(buildings);
 	    if(player.getInvuln()<1)
 	        targetX=player.getDrawX()+Player.CENTER_X;
 	    else
@@ -91,7 +114,10 @@ public class BasicGoon extends GroundGoon{
 		}
 		else
 		{
-			x += vx;
+			if((canMoveLeft(hitBuilding)&&vx<=0)||(canMoveRight(hitBuilding)&&vx>=0))
+			{
+					x += vx;
+			}
 		}
 		if(getHitbox().intersects(player.getHitbox()))
 		{
@@ -110,15 +136,11 @@ public class BasicGoon extends GroundGoon{
 		    }
 		}
         double groundY = Application.HEIGHT;
-        Building hitBuilding = null;
+        
         double x1 = x + HITBOX_X;
         double x2 = x1 + HITBOX_WIDTH;
-        for (Building b : buildings) {
-            if (!(x2 < b.getX1() || b.getX2() < x1) && b.getY() < groundY) {
-                hitBuilding = b;
-                groundY = b.getY();
-            }
-        }
+        groundY = hitBuilding.getY();
+        
         if (y + IMAGE_HEIGHT > groundY + INTERSECT_MARGIN) {
             if (hitBuilding != null) {
                 if (vx < 0) {
@@ -151,7 +173,7 @@ public class BasicGoon extends GroundGoon{
             {
             	accel=Math.copySign(RUN_ACCEL,accel);
             }
-            vx+=accel;
+            	vx+=accel;
             if(Math.abs(vx)>RUN_SPEED)
             {
             	vx=Math.copySign(RUN_SPEED,vx);

@@ -29,6 +29,12 @@ public abstract class Goon {
     {
     	return attacking;
     }
+    public abstract Building whichBuilding(ArrayList<Building> buildings);
+    
+    public abstract boolean canMoveLeft(Building b);
+    
+    public abstract boolean canMoveRight(Building b);
+    
     
     public boolean isDead()
     {

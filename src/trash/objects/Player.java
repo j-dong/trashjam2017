@@ -66,6 +66,12 @@ public class Player {
                         y + HITBOX_Y + HITBOX_HEIGHT);
     }
 
+    public AABB getBottomHitbox() {
+        return new AABB(x + HITBOX_X + HITBOX_WIDTH-5, y + HITBOX_Y + HITBOX_HEIGHT-5,
+                        x + HITBOX_X + HITBOX_WIDTH,
+                        y + HITBOX_Y + HITBOX_HEIGHT);
+    }
+
     public float getDrawX() {
         return (float)x;
     }
@@ -152,8 +158,11 @@ public class Player {
             {
                 if(invuln<1)
                 {
-                    health-=g.getDamage();
-                    invuln=Goon.invuln_given;
+                    if(vy<3)
+                    {
+                        health-=g.getDamage();
+                        invuln=Goon.invuln_given;
+                    }
                 }
                 double kb = g.getKnockback();
                 if (Math.abs(vx) < kb) {

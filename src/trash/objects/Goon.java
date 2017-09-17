@@ -49,6 +49,8 @@ public abstract class Goon {
 
     public abstract AABB getHitbox();
     
+    public abstract AABB getTopHitbox();
+    
     public abstract int getHitboxX();
 
     public abstract int getHitboxY();

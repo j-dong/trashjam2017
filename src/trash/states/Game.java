@@ -9,6 +9,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
@@ -67,6 +68,8 @@ public class Game extends BasicGameState {
     private Image buildingLastRow;
     private Image[] graffitiImages;
 
+    private Music mainTheme;
+
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
         buildings.clear();
@@ -90,9 +93,15 @@ public class Game extends BasicGameState {
                 graffiti.add(new Graffito((int)x, (int)y, index));
             }
         }
+        mainTheme.loop();
         Goon goon=new BasicGoon(player);
         goon.init(400,0);
         goons.add(goon);
+    }
+
+    @Override
+    public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+        mainTheme.stop();
     }
 
     @Override
@@ -126,6 +135,7 @@ public class Game extends BasicGameState {
             graffitiImages[i + NUM_GRAFFITI] = graffitiImages[i].getFlippedCopy(true, false);
         }
         graffiti = new ArrayList<>();
+        mainTheme = new Music("res/main.ogg");
         camx = 0;
         camy = 0;
         camvx = 0;

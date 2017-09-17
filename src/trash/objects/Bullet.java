@@ -6,9 +6,9 @@ import trash.Application;
 import trash.util.AABB;
 
 public class Bullet {
-    public static final int IMAGE_WIDTH = 60, IMAGE_HEIGHT = 60;
-    public static final int HITBOX_X = 10, HITBOX_Y = 10;
-    public static final int HITBOX_WIDTH = 40, HITBOX_HEIGHT = 40;
+    public static final int IMAGE_WIDTH = 30, IMAGE_HEIGHT = 30;
+    public static final int HITBOX_X = 0, HITBOX_Y = 0;
+    public static final int HITBOX_WIDTH = 30, HITBOX_HEIGHT = 30;
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 

@@ -84,6 +84,7 @@ public class Game extends BasicGameState {
     private Animation playerRunRight;
     private Animation playerRunLeft;
     private Animation bulletAnim;
+    private Image playerJump;
     private Image buildingTexture;
     private Image buildingLastRow;
     private Image[] graffitiImages;
@@ -175,6 +176,8 @@ public class Game extends BasicGameState {
         bullets = new ArrayList<>();
         playerImage = new Image("res/player.png");
         playerImage.setFilter(Image.FILTER_NEAREST);
+        playerJump = new Image("res/playerjump.png");
+        playerJump.setFilter(Image.FILTER_NEAREST);
         cannonImage = new Image("res/cannon.png");
         cannonImage.setFilter(Image.FILTER_LINEAR);
         cannonImage.setCenterOfRotation(Player.CANNON_CENTER_X, Player.CANNON_CENTER_Y);
@@ -229,8 +232,10 @@ public class Game extends BasicGameState {
         Image playerToDraw;
         switch (player.getAnimationState()) {
         case IDLE:
-        case JUMP:
             playerToDraw = playerImage;
+            break;
+        case JUMP:
+            playerToDraw = playerJump;
             break;
         case RUN_LEFT:
             playerToDraw = playerRunLeft.getCurrentFrame();

@@ -13,6 +13,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import trash.Application;
+import trash.objects.BasicGoon;
 import trash.objects.Building;
 import trash.objects.Goon;
 import trash.objects.Bullet;
@@ -47,6 +48,9 @@ public class Game extends BasicGameState {
         buildings.add(new Building(100, 500, initialGroundY));
         buildings.add(new Building(700, 800, initialGroundY + 100));
         player.init(200, initialGroundY);
+        Goon goon=new BasicGoon(player);
+        goon.init(400,0);
+        goons.add(goon);
     }
 
     @Override
@@ -76,9 +80,16 @@ public class Game extends BasicGameState {
         for (Bullet b : bullets) {
             g.fillOval(b.getDrawX() + Bullet.HITBOX_X, b.getDrawY() + Bullet.HITBOX_Y, Bullet.HITBOX_WIDTH, Bullet.HITBOX_HEIGHT);
         }
+        g.setColor(Color.red);
+        for (Goon go:goons) {
+            go.move(buildings);
+            g.fillRect(go.getDrawX() + go.getHitboxX(), go.getDrawY() + go.getHitboxY(), go.getHitboxWidth(), go.getHitboxHeight());
+        }
         cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));
         cannonImage.draw(player.getDrawX() + Player.CENTER_X - Player.CANNON_CENTER_X + (float)Math.cos(player.getShootAngle()) * Player.CANNON_RADIUS,
                          player.getDrawY() + Player.CENTER_Y - Player.CANNON_CENTER_Y + (float)Math.sin(player.getShootAngle()) * Player.CANNON_RADIUS);
+        g.setColor(Color.white);
+        g.drawString("Health: "+player.getHealth(),10,10);
     }
 
     @Override

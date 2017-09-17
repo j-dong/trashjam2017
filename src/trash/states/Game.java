@@ -11,8 +11,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
-import org.newdawn.slick.Renderable;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.particles.ConfigurableEmitter;
 import org.newdawn.slick.particles.ParticleIO;
@@ -47,6 +47,10 @@ public class Game extends BasicGameState {
     public static final int NUM_GRAFFITI = 5;
     public static final int MIN_NUM_GRAFFITI = 3;
 
+    public static final float FIRE_CANNON_VOLUME = 1.0f;
+    public static final float HIGH_EXPLOSION_VOLUME = 0.8f;
+    public static final float SOFT_EXPLOSION_VOLUME = 0.8f;
+
     private static class Graffito {
         public int x, y, index, rotation;
         public Graffito(int x, int y, int i) {
@@ -79,6 +83,7 @@ public class Game extends BasicGameState {
     private Image[] graffitiImages;
 
     private Music mainTheme;
+    private Sound fireCannon, highExplosion, softExplosion;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -113,7 +118,7 @@ public class Game extends BasicGameState {
         goon.init(700,0);
         goons.add(goon);
     }
-    
+
     public double getCamX()
     {
         return camx;
@@ -165,6 +170,9 @@ public class Game extends BasicGameState {
         blueExplosion = (ConfigurableEmitter)partsys.getEmitter(1);
         fireExplosion.setEnabled(false);
         blueExplosion.setEnabled(false);
+        fireCannon = new Sound("res/firecannon.ogg");
+        highExplosion = new Sound("res/highexplosion.ogg");
+        softExplosion = new Sound("res/softexplosion.ogg");
         camx = 0;
         camy = 0;
         camvx = 0;
@@ -177,22 +185,25 @@ public class Game extends BasicGameState {
         g.setBackground(backgroundColor);
         g.clear();
         g.translate(-(float)camx, -(float)camy);
-        Renderable playerToDraw;
+        Image playerToDraw;
         switch (player.getAnimationState()) {
         case IDLE:
         case JUMP:
             playerToDraw = playerImage;
             break;
         case RUN_LEFT:
-            playerToDraw = playerRunLeft;
+            playerToDraw = playerRunLeft.getCurrentFrame();
             break;
         case RUN_RIGHT:
-            playerToDraw = playerRunRight;
+            playerToDraw = playerRunRight.getCurrentFrame();
             break;
         default:
             playerToDraw = playerImage;
         }
-        playerToDraw.draw(player.getDrawX(), player.getDrawY());
+        if (player.shouldFlash())
+            playerToDraw.drawFlash(player.getDrawX(), player.getDrawY());
+        else
+            playerToDraw.draw(player.getDrawX(), player.getDrawY());
         // playerImage.draw(player.getDrawX(), player.getDrawY());
         g.setColor(Color.white);
         for (Building b : buildings)
@@ -237,8 +248,17 @@ public class Game extends BasicGameState {
                 b.move();
                 b.collide(buildings,goons);
                 if (b.shouldExplodeAndDie()) {
-                    createBlueExplosion(b.getDrawX() + Bullet.CENTER_X,
-                                        b.getDrawY() + Bullet.CENTER_Y);
+                    switch (b.getDeathCause()) {
+                    case ENEMY:
+                    case WALL:
+                        createBlueExplosion(b.getDrawX() + Bullet.CENTER_X,
+                                            b.getDrawY() + Bullet.CENTER_Y);
+                        highExplosion.play(1.0f, HIGH_EXPLOSION_VOLUME);
+                        break;
+                    case LIFE:
+                    case BOUNDS:
+                    default:
+                    }
                     it.remove();
                 }
             }
@@ -253,6 +273,7 @@ public class Game extends BasicGameState {
                      it.remove();
                      createFireExplosion(go.getDrawX() + go.getHitboxX() + go.getHitboxWidth() / 2,
                                          go.getDrawY() + go.getHitboxY() + go.getHitboxHeight() / 2);
+                     softExplosion.play(1.0f, SOFT_EXPLOSION_VOLUME);
                 }
             }
         }
@@ -304,6 +325,7 @@ public class Game extends BasicGameState {
     public void mousePressed(int button, int x, int y) {
         player.shootAt(x + camx, y + camy);
         bullets.add(player.createBullet());
+        fireCannon.play(1.0f, FIRE_CANNON_VOLUME);
     }
 
     private void moveCameraTowards(double x) {

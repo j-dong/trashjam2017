@@ -1,23 +1,31 @@
 package trash.states;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.EmptyTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import trash.Application;
 
 public class MainMenu extends BasicGameState {
     private boolean shouldToggleFullscreen;
     private Music mainMenu;
+    private Sound click;
+
+    public static float CLICK_VOLUME = 1.0f;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         mainMenu = new Music("res/menu.ogg");
+        click = new Sound("res/menuclick.ogg");
     }
 
     @Override
@@ -47,7 +55,9 @@ public class MainMenu extends BasicGameState {
                                fs ? agc.getScreenHeight() : Application.DISPLAY_HEIGHT, fs);
         }
         if (gc.getInput().isKeyPressed(Input.KEY_ENTER)) {
-            sbg.enterState(Application.GAME);
+            click.play(1.0f, CLICK_VOLUME);
+            mainMenu.fade(1000, 0.0f, true);
+            sbg.enterState(Application.GAME, new FadeOutTransition(Color.black, 1000), new EmptyTransition());
         }
 
     }

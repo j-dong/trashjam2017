@@ -32,6 +32,11 @@ public class BasicGoon extends GroundGoon{
         y = groundY - IMAGE_HEIGHT;
         targetX=(((int)(Math.random()*9999)&1)==0) ? 0 : Application.WIDTH;
     }
+	
+	public double getTargetX()
+	{
+	    return targetX;
+	}
 
     public AABB getHitbox() {
         return new AABB(x + HITBOX_X, y + HITBOX_Y,
@@ -117,10 +122,26 @@ public class BasicGoon extends GroundGoon{
     	    else
     	        targetX=x;
 		}
-		if(Math.abs(vx)>Math.abs(targetX-x))
+		if(Math.abs(vx)>=Math.abs(targetX-x))
 		{
 			x=targetX;
-			vx=0;
+			if(!aggro)
+			{
+			    if(targetX<=hitBuilding.getX1())
+                {
+                    targetX=hitBuilding.getX2();
+                    aggro=false;
+                }
+                else
+                {
+                    targetX=hitBuilding.getX1();
+                    aggro=false;
+                }
+			}
+			else
+			{
+	            vx=0;
+			}
 		}
 		else
 		{
@@ -130,7 +151,7 @@ public class BasicGoon extends GroundGoon{
 			}
 			else
 			{
-			    if(!canMoveLeft(hitBuilding)&&vx<=0)
+			    if(targetX<=hitBuilding.getX1())
 	            {
 	                targetX=hitBuilding.getX2();
 	                aggro=false;

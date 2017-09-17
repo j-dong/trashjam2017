@@ -47,7 +47,9 @@ public class Player {
         x = startX - HITBOX_X;
         y = groundY - IMAGE_HEIGHT;
         health=100;
-        invuln=30;
+        invuln=0;
+        vx=0;
+        vy=0;
         shouldJump = false;
         onGround = true;
         building=null;
@@ -160,8 +162,8 @@ public class Player {
                     // do nothing
                 }
                 vx+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+                break;
             }
-            break;
         }
         y += vy;
         vy += Game.GRAVITY;

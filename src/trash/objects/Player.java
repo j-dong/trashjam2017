@@ -13,8 +13,6 @@ public class Player {
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
-    public static final double TARGET_X = Game.PLAYER_X - HITBOX_X;
-
     public static final double RUN_ACCEL = 1.0;
     public static final double JUMP_VEL = 8;
     public static final double RECOIL_VEL = 12;

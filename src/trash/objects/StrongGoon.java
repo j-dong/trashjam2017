@@ -6,25 +6,25 @@ import trash.Application;
 import trash.states.Game;
 import trash.util.AABB;
 
-public class BasicGoon extends GroundGoon{
+public class StrongGoon extends GroundGoon{
 
-	public static final int IMAGE_WIDTH=50, IMAGE_HEIGHT=50;
+	public static final int IMAGE_WIDTH=150, IMAGE_HEIGHT=150;
     public static final int HITBOX_X=0, HITBOX_Y=0;
-    public static final int HITBOX_WIDTH=50, HITBOX_HEIGHT = IMAGE_HEIGHT - HITBOX_Y;
+    public static final int HITBOX_WIDTH=150, HITBOX_HEIGHT = IMAGE_HEIGHT - HITBOX_Y;
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
     public static final double RUN_SPEED=1;
     public static final double RUN_ACCEL=1;
     
-    public static final int DAMAGE=10;
+    public static final int DAMAGE=25;
     public static final double KNOCKBACK=2.5;
     
     private boolean aggro=false;
 	
-    public BasicGoon(Player play) {
+    public StrongGoon(Player play) {
 		super(play);
-		health=1;
+		health=2;
 	}
 	
 	public void init(int startX,int groundY) {
@@ -183,9 +183,7 @@ public class BasicGoon extends GroundGoon{
         
         double x1 = x + HITBOX_X;
         double x2 = x1 + HITBOX_WIDTH;
-
-	    if(hitBuilding!=null)
-	    	groundY = hitBuilding.getY();
+        groundY = hitBuilding.getY();
         
         if (y + IMAGE_HEIGHT > groundY + INTERSECT_MARGIN) {
             if (hitBuilding != null) {

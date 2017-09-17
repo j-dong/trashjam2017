@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import trash.Application;
 import trash.states.Game;
 import trash.util.AABB;
-
-public class BasicGoon extends GroundGoon{
+public class FlyingGoon extends AirGoon{
 
 	public static final int IMAGE_WIDTH=50, IMAGE_HEIGHT=50;
     public static final int HITBOX_X=0, HITBOX_Y=0;
@@ -19,10 +18,8 @@ public class BasicGoon extends GroundGoon{
     
     public static final int DAMAGE=10;
     public static final double KNOCKBACK=2.5;
-    
-    private boolean aggro=false;
 	
-    public BasicGoon(Player play) {
+    public FlyingGoon(Player play) {
 		super(play);
 		health=1;
 	}
@@ -110,58 +107,33 @@ public class BasicGoon extends GroundGoon{
 	        return;
 	    }
 		Building hitBuilding = whichBuilding(buildings);
-		if(player.getBuilding()!=null&&player.getBuilding().equals(hitBuilding)
-		        &&player.getDrawY()+Player.HITBOX_Y+Player.HITBOX_HEIGHT<=y+HITBOX_Y)
-		{
-		    aggro=true;
-		}
-		if(aggro)
-		{
     	    if(player.getInvuln()<1)
+    	    {
     	        targetX=player.getDrawX()+Player.CENTER_X;
+    	        targetY=player.getDrawY()+Player.CENTER_Y;
+    	    }
     	    else
+    	    {
     	        targetX=x;
-		}
+    	        targetY=y;
+    	    }
 		if(Math.abs(vx)>=Math.abs(targetX-x))
 		{
 			x=targetX;
-			if(!aggro)
-			{
-			    if(targetX<=hitBuilding.getX1())
-                {
-                    targetX=hitBuilding.getX2();
-                    aggro=false;
-                }
-                else
-                {
-                    targetX=hitBuilding.getX1();
-                    aggro=false;
-                }
-			}
-			else
-			{
-	            vx=0;
-			}
+	        vx=0;
 		}
 		else
 		{
-			if((canMoveLeft(hitBuilding)&&vx<=0)||(canMoveRight(hitBuilding)&&vx>=0))
-			{
-					x += vx;
-			}
-			else
-			{
-			    if(targetX<=hitBuilding.getX1())
-	            {
-	                targetX=hitBuilding.getX2();
-	                aggro=false;
-	            }
-	            else
-	            {
-                    targetX=hitBuilding.getX1();
-                    aggro=false;
-	            }
-			}
+			x += vx;
+		}
+		if(Math.abs(vy)>=Math.abs(targetY-y))
+		{
+			y=targetY;
+	        vy=0;
+		}
+		else
+		{
+			y += vy;
 		}
 		if(getHitbox().intersects(player.getHitbox()))
 		{
@@ -177,13 +149,13 @@ public class BasicGoon extends GroundGoon{
 		    {
 		        health--;
                 x+=Math.copySign(50,x-bill.getDrawX());
+                y+=Math.copySign(50,y-bill.getDrawY());
 		    }
 		}
         double groundY = Application.HEIGHT;
         
         double x1 = x + HITBOX_X;
         double x2 = x1 + HITBOX_WIDTH;
-
 	    if(hitBuilding!=null)
 	    	groundY = hitBuilding.getY();
         
@@ -206,24 +178,31 @@ public class BasicGoon extends GroundGoon{
             }
         }
         y += vy;
-        vy += Game.GRAVITY;
         if (y + IMAGE_HEIGHT > groundY) {
             vy = 0;
             y = groundY - IMAGE_HEIGHT;
         }
-        if (y + IMAGE_HEIGHT + 1 >= groundY) {
-            // if on ground
-            double target_vel=targetX-x;
-            double accel=target_vel-vx;
-            if(Math.abs(accel)>RUN_ACCEL)
-            {
-            	accel=Math.copySign(RUN_ACCEL,accel);
-            }
-            	vx+=accel;
-            if(Math.abs(vx)>RUN_SPEED)
-            {
-            	vx=Math.copySign(RUN_SPEED,vx);
-            }
+        double target_Xvel=targetX-x;
+        double accelX=target_Xvel-vx;
+        if(Math.abs(accelX)>RUN_ACCEL)
+        {
+        	accelX=Math.copySign(RUN_ACCEL,accelX);
+        }
+        	vx+=accelX;
+        if(Math.abs(vx)>RUN_SPEED)
+        {
+        	vx=Math.copySign(RUN_SPEED,vx);
+        }
+        double target_Yvel=targetY-y;
+        double accelY=target_Yvel-vy;
+        if(Math.abs(accelY)>RUN_ACCEL)
+        {
+        	accelY=Math.copySign(RUN_ACCEL,accelY);
+        }
+        	vy+=accelY;
+        if(Math.abs(vy)>RUN_SPEED)
+        {
+        	vy=Math.copySign(RUN_SPEED,vy);
         }
     }
 }

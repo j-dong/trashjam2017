@@ -17,6 +17,8 @@ public abstract class Goon {
     protected int health;
     protected double knockback;
     protected boolean dead; 
+      
+    public static final int INTERSECT_MARGIN = 10;
     
     public static final int invuln_given=30;
     

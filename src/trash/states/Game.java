@@ -235,8 +235,11 @@ public class Game extends BasicGameState {
             {
                 Goon go=it.next();
                 go.move(buildings,bullets);
-                if(go.isDead())
+                if(go.isDead()) {
                      it.remove();
+                     createFireExplosion(go.getDrawX() + go.getHitboxX() + go.getHitboxWidth() / 2,
+                                         go.getDrawY() + go.getHitboxY() + go.getHitboxHeight() / 2);
+                }
             }
         }
         // move camera to hold player
@@ -319,14 +322,14 @@ public class Game extends BasicGameState {
     private void createFireExplosion(float x, float y) {
         ConfigurableEmitter e = fireExplosion.duplicate();
         e.setEnabled(true);
-        e.setPosition(x, y);
+        e.setPosition(x, y, false);
         partsys.addEmitter(e);
     }
 
     private void createBlueExplosion(float x, float y) {
         ConfigurableEmitter e = blueExplosion.duplicate();
         e.setEnabled(true);
-        e.setPosition(x, y);
+        e.setPosition(x, y, false);
         partsys.addEmitter(e);
     }
 }

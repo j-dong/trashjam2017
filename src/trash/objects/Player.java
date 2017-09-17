@@ -20,6 +20,7 @@ public class Player {
     public static final double FRICTION_ACCEL = 1.0;
     public static final double RUN_ACCEL = 1.0;
     public static final double RUN_VELOCITY = 1.25;
+    public static final double IDLE_VELOCITY = 0.25;
     public static final double JUMP_VEL = 8;
     public static final double RECOIL_VEL = 12;
     public static final int INTERSECT_MARGIN = 10;
@@ -34,7 +35,7 @@ public class Player {
     private boolean shouldShoot;
     private double shootAngle; // in radians
     private int runDirection;
-    
+    private boolean onGround;
     private int invuln;
     private int health;
 
@@ -47,6 +48,7 @@ public class Player {
         x = startX - HITBOX_X;
         y = groundY - IMAGE_HEIGHT;
         shouldJump = false;
+        onGround = true;
     }
 
     public AABB getHitbox() {
@@ -157,7 +159,8 @@ public class Player {
                 vx = Math.copySign(RUN_VELOCITY * 5, vx);
             }
         }
-        if (y + IMAGE_HEIGHT + 1 >= groundY) {
+        onGround = y + IMAGE_HEIGHT + 1 >= groundY;
+        if (onGround) {
             // if on ground
             // friction
             double accel = Math.copySign(FRICTION_ACCEL, -vx);
@@ -178,5 +181,21 @@ public class Player {
         }
         shouldShoot = false;
         shouldJump = false;
+    }
+
+    public static enum AnimationState {
+        IDLE, RUN_RIGHT, RUN_LEFT, JUMP
+    }
+
+    public AnimationState getAnimationState() {
+        if (onGround) {
+            if (Math.abs(vx) <= IDLE_VELOCITY) {
+                return AnimationState.IDLE;
+            } else {
+                return vx < 0 ? AnimationState.RUN_LEFT : AnimationState.RUN_RIGHT;
+            }
+        } else {
+            return AnimationState.JUMP;
+        }
     }
 }

@@ -17,8 +17,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import trash.Application;
 import trash.objects.Building;
-import trash.objects.Goon;
 import trash.objects.Bullet;
+import trash.objects.Goon;
 import trash.objects.Player;
 import trash.util.AABB;
 
@@ -48,6 +48,8 @@ public class Game extends BasicGameState {
     private Animation playerRunRight;
     private Animation playerRunLeft;
     private Animation bulletAnim;
+    private Image buildingTexture;
+    private Image buildingLastRow;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -79,13 +81,21 @@ public class Game extends BasicGameState {
             }
         }
         bulletAnim = new Animation(new SpriteSheet("res/bullet.png", 30, 30), BULLET_ANIMATION_SPEED);
+        buildingTexture = new Image("res/building.png");
+        buildingLastRow = buildingTexture.getSubImage(0, buildingTexture.getHeight() - 1, buildingTexture.getWidth(), 1);
+        buildingTexture.setFilter(Image.FILTER_NEAREST);
+        buildingLastRow.setFilter(Image.FILTER_NEAREST);
         camx = 0;
         camy = 0;
         camvx = 0;
     }
 
+    private Color backgroundColor = new Color(114, 135, 112);
+
     @Override
     public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
+        g.setBackground(backgroundColor);
+        g.clear();
         g.translate(-(float)camx, -(float)camy);
         Renderable playerToDraw;
         switch (player.getAnimationState()) {
@@ -159,8 +169,10 @@ public class Game extends BasicGameState {
     }
 
     private void drawBuilding(Graphics g, Building b) {
-        g.fillRect((float)b.getX1(), (float)b.getY(),
-                (float)b.getX2() - (float)b.getX1(), (float)(Application.HEIGHT - b.getY()));
+        float bw = (float)(b.getX2() - b.getX1());
+        float bh = Application.HEIGHT - (float)b.getY();
+        buildingTexture.draw((float)b.getX1(), (float)b.getY(), bw, buildingTexture.getHeight());
+        buildingLastRow.draw((float)b.getX1(), (float)b.getY() + buildingTexture.getHeight() - 1, bw, 1 + bh - buildingTexture.getHeight());
     }
 
     @Override

@@ -46,8 +46,8 @@ public class Credits extends BasicGameState {
             new CreditLine("Art:", 250, 10, 14.0, 25.0),
             new CreditLine("Zara Sharaf (sugarhyped)", 290, 50, 15.0, 25.0),
 
-            new CreditLine("Music:", 490, 10, 17.0, 25.0),
-            new CreditLine("Aeddon Chipman", 530, 50, 18.0, 25.0),
+            new CreditLine("Music:", 550, 10, 17.0, 25.0),
+            new CreditLine("Aeddon Chipman", 590, 50, 18.0, 25.0),
 
             new CreditLine("Thanks for playing!", 450, 200, 20.0, 25.0),
     };

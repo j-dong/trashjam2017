@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -35,6 +36,12 @@ public class Application extends StateBasedGame {
         this.addState(new Game());
         this.addState(new GameOver());
         this.addState(new Credits());
+    }
+
+    @Override
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_ESCAPE)
+            this.getContainer().exit();
     }
 
     public static int DISPLAY_WIDTH, DISPLAY_HEIGHT;

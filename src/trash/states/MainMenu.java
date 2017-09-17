@@ -4,6 +4,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
@@ -17,6 +18,7 @@ import trash.Application;
 
 public class MainMenu extends BasicGameState {
     private boolean shouldToggleFullscreen;
+    private Image title;
     private Music mainMenu;
     private Sound click;
 
@@ -26,6 +28,8 @@ public class MainMenu extends BasicGameState {
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
         mainMenu = new Music("res/menu.ogg");
         click = new Sound("res/menuclick.ogg");
+        title = new Image("res/title.png");
+        title.setFilter(Image.FILTER_NEAREST);
     }
 
     @Override
@@ -40,9 +44,7 @@ public class MainMenu extends BasicGameState {
 
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-        g.clear();
-        g.drawString("Main Menu", 10, 10);
-        g.drawString("Press ENTER to start", 10, 50);
+        title.draw(0.0f, 0.0f, Application.WIDTH, Application.HEIGHT);
     }
 
     @Override

@@ -59,7 +59,9 @@ public class MainMenu extends BasicGameState {
             mainMenu.fade(1000, 0.0f, true);
             sbg.enterState(Application.GAME, new FadeOutTransition(Color.black, 1000), new EmptyTransition());
         }
-
+        if (gc.getInput().isKeyPressed(Input.KEY_C)) {
+            sbg.enterState(Application.CREDITS);
+        }
     }
 
     @Override

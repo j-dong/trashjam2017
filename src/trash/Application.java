@@ -9,6 +9,7 @@ import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import trash.states.Credits;
 import trash.states.Game;
 import trash.states.GameOver;
 import trash.states.MainMenu;
@@ -22,6 +23,7 @@ public class Application extends StateBasedGame {
     public static final int MAINMENU = 0;
     public static final int GAME = 1;
     public static final int GAMEOVER = 2;
+    public static final int CREDITS = 3;
 
     public Application() {
         super(GAME_NAME);
@@ -32,8 +34,9 @@ public class Application extends StateBasedGame {
         this.addState(new MainMenu());
         this.addState(new Game());
         this.addState(new GameOver());
+        this.addState(new Credits());
     }
-    
+
     public static int DISPLAY_WIDTH, DISPLAY_HEIGHT;
 
     public static void main(String[] args) {

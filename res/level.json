@@ -26,7 +26,7 @@
             "y": 280
         }
     ],
-    "enemies": [
+    "goons": [
         {
             "type": "basic",
             "x": 400,

@@ -5,8 +5,8 @@ public class GoonFactory {
 		Goon goon=null;
 		switch(name){
 		case "basic":goon=new BasicGoon(player);break;
-		case "strong":goon=new BasicGoon(player);break;
-		case "flying":goon=new BasicGoon(player);break;
+		case "strong":goon=new StrongGoon(player);break;
+		case "flying":goon=new FlyingGoon(player);break;
 		}
 		goon.init(x, y);
 		return goon;

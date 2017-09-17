@@ -197,6 +197,9 @@ public class Player {
             if (Math.abs(vx) > RUN_VELOCITY * 5) {
                 vx = Math.copySign(RUN_VELOCITY * 5, vx);
             }
+            if (groundY >= Application.HEIGHT) {
+                health = 0;
+            }
         }
         //TODO: Decrease velocity on impact with ground
         onGround = y + IMAGE_HEIGHT + 1 >= groundY;

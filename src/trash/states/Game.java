@@ -1,6 +1,5 @@
 package trash.states;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -143,16 +142,19 @@ public class Game extends BasicGameState {
                 graffiti.add(new Graffito((int)x, (int)y, index));
             }
         }
+        camx = 0;
+        camvx = 0;
+        camy = 0;
         mainTheme.loop();
-        Goon goon=new StrongGoon(player);
-        goon.init(400,0);
-        goons.add(goon);
-        goon=new FlyingGoon(player);
-        goon.init(700,0);
-        goons.add(goon);
-        goon = new BasicGoon(player);
-        goon.init(1000, 0);
-        goons.add(goon);
+//        Goon goon=new StrongGoon(player);
+//        goon.init(400,0);
+//        goons.add(goon);
+//        goon=new FlyingGoon(player);
+//        goon.init(700,0);
+//        goons.add(goon);
+//        goon = new BasicGoon(player);
+//        goon.init(1000, 0);
+//        goons.add(goon);
     }
 
     public double getCamX()
@@ -341,6 +343,9 @@ public class Game extends BasicGameState {
         if(player.getHealth()<1)
         {
             sbg.enterState(Application.GAMEOVER);
+        }
+        if (goons.size() == 0) {
+            sbg.enterState(Application.CREDITS);
         }
     }
 

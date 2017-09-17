@@ -41,6 +41,7 @@ public class Player {
     private int invuln;
     private int health;
     private Building building;
+    private boolean hurt;
 
     public Player() {
     }
@@ -153,6 +154,7 @@ public class Player {
                 }
             }
         }
+        hurt = false;
         for (Goon g:goons) {
             if(getHitbox().intersects(g.getHitbox()))
             {
@@ -160,6 +162,7 @@ public class Player {
                 {
                     health-=g.getDamage();
                     invuln=Goon.invuln_given;
+                    hurt = true;
                 }
                 double kb = g.getKnockback();
                 if (Math.abs(vx) < kb) {
@@ -209,6 +212,10 @@ public class Player {
         }
         shouldShoot = false;
         shouldJump = false;
+    }
+
+    public boolean hasJustBeenHurt() {
+        return hurt;
     }
 
     public static enum AnimationState {

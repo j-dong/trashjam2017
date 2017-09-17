@@ -50,6 +50,7 @@ public class Game extends BasicGameState {
     public static final float FIRE_CANNON_VOLUME = 1.0f;
     public static final float HIGH_EXPLOSION_VOLUME = 0.8f;
     public static final float SOFT_EXPLOSION_VOLUME = 0.8f;
+    public static final float HURT_VOLUME = 1.0f;
 
     private static class Graffito {
         public int x, y, index, rotation;
@@ -87,6 +88,7 @@ public class Game extends BasicGameState {
 
     private Music mainTheme;
     private Sound fireCannon, highExplosion, softExplosion;
+    private Sound hurtSound;
 
     @Override
     public void enter(GameContainer container, StateBasedGame game) throws SlickException {
@@ -179,6 +181,7 @@ public class Game extends BasicGameState {
         fireCannon = new Sound("res/firecannon.ogg");
         highExplosion = new Sound("res/highexplosion.ogg");
         softExplosion = new Sound("res/softexplosion.ogg");
+        hurtSound = new Sound("res/hurt.ogg");
         basicGoon = new Image("res/plasticbag.png");
         strongGoon = new Image("res/trashbag.png");
         flyingGoon = new Animation(new SpriteSheet("res/tshirt.png", 50, 50), 200); // TODO
@@ -254,6 +257,9 @@ public class Game extends BasicGameState {
         if (input.isKeyDown(Input.KEY_SPACE)||input.isKeyDown(Input.KEY_UP)||input.isKeyDown(Input.KEY_W))
             player.setShouldJump(true);
         player.move(buildings,goons);
+        if (player.hasJustBeenHurt()) {
+            hurtSound.play(1.0f, HURT_VOLUME);
+        }
         {
             Iterator<Bullet> it = bullets.iterator();
             while (it.hasNext()) {

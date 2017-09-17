@@ -36,8 +36,12 @@ public class Player {
     private double shootAngle; // in radians
     private int runDirection;
     private boolean onGround;
+    private int invuln;
+    private int health;
 
     public Player() {
+    	invuln=30;
+    	health=100;
     }
 
     public void init(int startX, int groundY) {
@@ -88,10 +92,26 @@ public class Player {
                           shootAngle);
     }
 
-    public void move(ArrayList<Building> buildings) {
+    public void move(ArrayList<Building> buildings,ArrayList<Goon> goons) {
         x += vx;
+    	if(invuln>0)
+    	{
+    		invuln--;
+    	}
         double groundY = Application.HEIGHT;
         {
+        	if(invuln<1)
+        	{
+	            for (Goon g:goons) {
+	                if(getHitbox().intersects(g.getHitbox()))
+	                {
+	                	health-=g.getDamage();
+	                	invuln=Goon.invuln_given;
+	                	x+=Math.copySign(g.getKnockback(),x-g.getDrawX());
+	                }
+	                break;
+	            }
+        	}
             Building hitBuilding = null;
             double x1 = x + HITBOX_X;
             double x2 = x1 + HITBOX_WIDTH;

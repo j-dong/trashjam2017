@@ -30,6 +30,8 @@ public class Application extends StateBasedGame {
         this.addState(new MainMenu());
         this.addState(new Game());
     }
+    
+    public static int DISPLAY_WIDTH, DISPLAY_HEIGHT;
 
     public static void main(String[] args) {
         try {
@@ -37,7 +39,9 @@ public class Application extends StateBasedGame {
             appgc = new AppGameContainer(new ScalableGame(new Application(), WIDTH, HEIGHT));
             String sf = System.getenv("SCALE_FACTOR");
             int scale_factor = sf == null || sf.length() == 0 ? 1 : Integer.parseInt(sf);
-            appgc.setDisplayMode(WIDTH * scale_factor, HEIGHT * scale_factor, false);
+            DISPLAY_WIDTH = WIDTH * scale_factor;
+            DISPLAY_HEIGHT = HEIGHT * scale_factor;
+            appgc.setDisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT, false);
             appgc.setTargetFrameRate(FPS);
             appgc.setShowFPS(false);
             appgc.start();

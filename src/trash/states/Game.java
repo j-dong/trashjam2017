@@ -17,6 +17,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import trash.Application;
 import trash.objects.Building;
+import trash.objects.Goon;
 import trash.objects.Bullet;
 import trash.objects.Player;
 import trash.util.AABB;
@@ -35,6 +36,7 @@ public class Game extends BasicGameState {
     public static final int BULLET_ANIMATION_SPEED = 40;
 
     private ArrayList<Building> buildings;
+    private ArrayList<Goon> goons;
     private Player player;
     private ArrayList<Bullet> bullets;
 
@@ -60,6 +62,7 @@ public class Game extends BasicGameState {
     public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
         player = new Player();
         buildings = new ArrayList<>();
+        goons = new ArrayList<>();
         bullets = new ArrayList<>();
         playerImage = new Image("res/player.png");
         playerImage.setFilter(Image.FILTER_NEAREST);
@@ -123,7 +126,7 @@ public class Game extends BasicGameState {
         player.setShootAngle(mx + camx, my + camy);
         if (input.isKeyDown(Input.KEY_SPACE)||input.isKeyDown(Input.KEY_UP)||input.isKeyDown(Input.KEY_W))
             player.setShouldJump(true);
-        player.move(buildings);
+        player.move(buildings,goons);
         {
             Iterator<Bullet> it = bullets.iterator();
             while (it.hasNext()) {

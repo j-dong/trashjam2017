@@ -16,9 +16,13 @@ public class BasicGoon extends GroundGoon{
 
     public static final double RUN_SPEED=25;
     public static final double RUN_ACCEL=1;
+    
+    public static final int DAMAGE=10;
+    public static final int KNOCKBACK=50;
 	
     public BasicGoon(Player play) {
 		super(play);
+		health=1;
 	}
 	
 	public void init(int startX,int groundY) {
@@ -36,6 +40,16 @@ public class BasicGoon extends GroundGoon{
         return (float)x;
     }
 
+    public int getDamage()
+    {
+    	return DAMAGE;
+    }
+
+    public int getKnockback()
+    {
+    	return KNOCKBACK;
+    }
+    
     public float getDrawY() {
         return (float)y;
     }
@@ -50,6 +64,14 @@ public class BasicGoon extends GroundGoon{
 		else
 		{
 			x += vx;
+		}
+		if(getHitbox().intersects(player.getHitbox()))
+		{
+			attacking=true;
+		}
+		else
+		{
+			attacking=false;
 		}
         double groundY = Application.HEIGHT;
         {

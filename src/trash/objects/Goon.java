@@ -13,9 +13,20 @@ public abstract class Goon {
     // velocity
     protected double vx, vy;
     
+    protected boolean attacking;
+    protected int health;
+    protected double knockback;
+    
+    public static final int invuln_given=30;
+    
     public Goon(Player play)
     {
         player=play;
+        attacking=false;
+    }
+    public boolean isAttacking()
+    {
+    	return attacking;
     }
 
     public abstract void init(int x,int y);
@@ -25,6 +36,10 @@ public abstract class Goon {
     public abstract float getDrawX();
 
     public abstract float getDrawY();
+    
+    public abstract int getDamage();
+    
+    public abstract int getKnockback();
     
     public abstract void move(ArrayList<Building> buildings);
     

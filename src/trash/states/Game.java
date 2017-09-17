@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import trash.Application;
 import trash.objects.Building;
+import trash.objects.Goon;
 import trash.objects.Player;
 import trash.util.AABB;
 
@@ -26,6 +27,7 @@ public class Game extends BasicGameState {
     public static final int SCROLL_TOP = 200;
 
     private ArrayList<Building> buildings;
+    private ArrayList<Goon> goons;
     private Player player;
 
     private double camx, camy, camvx;
@@ -68,7 +70,7 @@ public class Game extends BasicGameState {
                                (input.isKeyDown(Input.KEY_RIGHT)||input.isKeyDown(Input.KEY_D) ?  1 : 0));
         if (input.isKeyDown(Input.KEY_SPACE)||input.isKeyDown(Input.KEY_UP)||input.isKeyDown(Input.KEY_W))
             player.setShouldJump(true);
-        player.move(buildings);
+        player.move(buildings,goons);
         // move camera to hold player
         AABB prect = player.getHitbox();
         if (prect.x1 - camx < SCROLL_LEFT) {

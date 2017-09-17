@@ -40,6 +40,7 @@ public class Application extends StateBasedGame {
 
     @Override
     public void keyPressed(int key, char c) {
+        super.keyPressed(key, c);
         if (key == Input.KEY_ESCAPE)
             this.getContainer().exit();
     }

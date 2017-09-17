@@ -49,14 +49,14 @@ public class Credits extends BasicGameState {
             new CreditLine("Music:", 550, 10, 17.0, 25.0),
             new CreditLine("Aeddon Chipman", 590, 50, 18.0, 25.0),
 
-            new CreditLine("Thanks for playing!", 450, 200, 20.0, 25.0),
+            new CreditLine("Thanks for playing!", 450, 200, 20.0, 32.5),
     };
 
     double curTime;
 
     @Override
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        credits = null;//new Music("res/gameover.ogg");
+        credits = new Music("res/credits.ogg");
         endTime = 0.0;
         for (CreditLine line : creditLines) {
             if (line.end > endTime)
@@ -92,7 +92,7 @@ public class Credits extends BasicGameState {
         if (gc.getInput().isKeyPressed(Input.KEY_ENTER) || curTime >= endTime) {
             sbg.enterState(Application.MAINMENU);
         }
-        curTime += i / 1000.0;
+        curTime += i / 2000.0;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class Game extends BasicGameState {
     public static final int RUN_ANIMATION_SPEED = 100;
     public static final int BULLET_ANIMATION_SPEED = 40;
 
-    public static final double GRAFFITI_MAX_DENSITY = 0.1;
+    public static final double GRAFFITI_MAX_DENSITY = 0.05;
     public static final int NUM_GRAFFITI = 5;
     public static final int MIN_NUM_GRAFFITI = 3;
 
@@ -81,6 +81,9 @@ public class Game extends BasicGameState {
     private Image buildingTexture;
     private Image buildingLastRow;
     private Image[] graffitiImages;
+    private Image basicGoon, strongGoon;
+    private Animation flyingGoon;
+    private Image background;
 
     private Music mainTheme;
     private Sound fireCannon, highExplosion, softExplosion;
@@ -116,6 +119,9 @@ public class Game extends BasicGameState {
         goons.add(goon);
         goon=new FlyingGoon(player);
         goon.init(700,0);
+        goons.add(goon);
+        goon = new BasicGoon(player);
+        goon.init(1000, 0);
         goons.add(goon);
     }
 
@@ -173,17 +179,19 @@ public class Game extends BasicGameState {
         fireCannon = new Sound("res/firecannon.ogg");
         highExplosion = new Sound("res/highexplosion.ogg");
         softExplosion = new Sound("res/softexplosion.ogg");
+        basicGoon = new Image("res/plasticbag.png");
+        strongGoon = new Image("res/trashbag.png");
+        flyingGoon = new Animation(new SpriteSheet("res/tshirt.png", 50, 50), 200); // TODO
+        background = new Image("res/sunset.png");
+        background.setFilter(Image.FILTER_NEAREST);
         camx = 0;
         camy = 0;
         camvx = 0;
     }
 
-    private Color backgroundColor = new Color(114, 135, 112);
-
     @Override
     public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-        g.setBackground(backgroundColor);
-        g.clear();
+        background.draw(0.0f, 0.0f, Application.WIDTH, Application.HEIGHT);
         g.translate(-(float)camx, -(float)camy);
         Image playerToDraw;
         switch (player.getAnimationState()) {
@@ -216,18 +224,23 @@ public class Game extends BasicGameState {
             bulletAnim.draw(b.getDrawX(), b.getDrawY());
         }
         for (Goon go:goons) {
-            if(go instanceof BasicGoon)
-                g.setColor(Color.red);
-            else
+            if(go instanceof BasicGoon) {
+                basicGoon.draw(go.getDrawX(), go.getDrawY());
+            } else if (go instanceof StrongGoon) {
+                strongGoon.draw(go.getDrawX(), go.getDrawY());
+            } else if (go instanceof FlyingGoon) {
+                flyingGoon.draw(go.getDrawX(), go.getDrawY());
+            } else {
                 g.setColor(Color.magenta);
-            g.fillRect(go.getDrawX() + go.getHitboxX(), go.getDrawY() + go.getHitboxY(), go.getHitboxWidth(), go.getHitboxHeight());
+                g.fillRect(go.getDrawX() + go.getHitboxX(), go.getDrawY() + go.getHitboxY(), go.getHitboxWidth(), go.getHitboxHeight());
+            }
         }
         cannonImage.setRotation((float)Math.toDegrees(player.getShootAngle()));
         cannonImage.draw(player.getDrawX() + Player.CENTER_X - Player.CANNON_CENTER_X + (float)Math.cos(player.getShootAngle()) * Player.CANNON_RADIUS,
                          player.getDrawY() + Player.CENTER_Y - Player.CANNON_CENTER_Y + (float)Math.sin(player.getShootAngle()) * Player.CANNON_RADIUS);
         partsys.render();
         g.setColor(Color.white);
-        g.drawString("Health: "+player.getHealth(),10,10);
+        g.drawString("Health: "+player.getHealth(),10 + (float)camx,10 + (float)camy);
 //        g.drawString(""+goons.get(goons.size()-1).getTargetX(),700,50);
     }
 
@@ -287,9 +300,9 @@ public class Game extends BasicGameState {
             camvx = 0;
         }
         camy = Math.min(0, prect.y1 - SCROLL_TOP);
-        playerRunRight.update(1);
-        playerRunLeft.update(1);
-        bulletAnim.update(1);
+        playerRunRight.update(dt);
+        playerRunLeft.update(dt);
+        bulletAnim.update(dt);
         partsys.update(dt);
         if(player.getHealth()<1)
         {

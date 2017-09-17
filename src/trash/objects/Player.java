@@ -8,8 +8,8 @@ import trash.util.AABB;
 //todo: add knockback while invuln so can't run through enemy with invuln
 public class Player {
     public static final int IMAGE_WIDTH = 60, IMAGE_HEIGHT = 75;
-    public static final int HITBOX_X = 10, HITBOX_Y = 10;
-    public static final int HITBOX_WIDTH = 40, HITBOX_HEIGHT = IMAGE_HEIGHT - HITBOX_Y;
+    public static final int HITBOX_X = 20, HITBOX_Y = 10;
+    public static final int HITBOX_WIDTH = IMAGE_WIDTH - HITBOX_X * 2, HITBOX_HEIGHT = IMAGE_HEIGHT - HITBOX_Y;
     public static final int CENTER_X = HITBOX_X + HITBOX_WIDTH / 2;
     public static final int CENTER_Y = HITBOX_Y + HITBOX_HEIGHT / 2;
 
